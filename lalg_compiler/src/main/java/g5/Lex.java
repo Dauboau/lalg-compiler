@@ -1,6 +1,7 @@
 package g5;
 
 import java.io.FileInputStream;
+import java.lang.reflect.Field;
 
 /**
  * Classe Lex, responsável pela Análise Léxixa.
@@ -28,7 +29,7 @@ public class Lex {
      * @return O nome do token em minúsculas, ou "desconhecido" se não for encontrado.
      */
     public static String getTokenName(int kind) {
-        for (java.lang.reflect.Field f : LALGConstants.class.getDeclaredFields()) {
+        for (Field f : LALGConstants.class.getDeclaredFields()) {
             try {
                 if (f.getType() == int.class && f.getInt(null) == kind) {
                     return f.getName().toLowerCase();
