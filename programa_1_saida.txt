@@ -1,4 +1,3 @@
-Início da análise do arquivo: ./programa_1.lalg
 program - simb_program
 teste - simb_identificador
 ; - simb_ponto_virgula
@@ -31,6 +30,3 @@ B - simb_identificador
 ) - simb_fecha_parenteses
 end - simb_fim
 . - simb_ponto
-EOF - simb_eof
-
-Análise concluída com sucesso. Saída salva em: ./programa_1_saida.txt

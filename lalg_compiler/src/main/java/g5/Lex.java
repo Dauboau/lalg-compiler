@@ -38,7 +38,7 @@ public class Lex {
         palavrasReservadas.put("while", "simb_enquanto");
         palavrasReservadas.put("do", "simb_faca");
         
-        // Operadores
+        // Operadores Aritméticos e de Pontuação
         palavrasReservadas.put("+", "simb_mais");
         palavrasReservadas.put("-", "simb_menos");
         palavrasReservadas.put("*", "simb_asterisco");
@@ -49,6 +49,15 @@ public class Lex {
         palavrasReservadas.put(",", "simb_virgula");
         palavrasReservadas.put("(", "simb_abre_parenteses");
         palavrasReservadas.put(")", "simb_fecha_parenteses");
+
+        // Operadores Relacionais
+        palavrasReservadas.put("<", "simb_menor");
+        palavrasReservadas.put("<=", "simb_menor_igual");
+        palavrasReservadas.put("<>", "simb_diferente");
+        palavrasReservadas.put(">", "simb_maior");
+        palavrasReservadas.put(">=", "simb_maior_igual");
+        palavrasReservadas.put(":", "simb_dois_pontos");
+        palavrasReservadas.put(":=", "simb_atribuicao");
     }
 
     public Lex(String codigoFonte) {
@@ -81,8 +90,8 @@ public class Lex {
             return processarNumero();
         }
 
-        // 3. Operadores e Pontuações
-        return processarOperadorOuPontuacao();
+        // 3. Outros Símbolos (Operadores e Pontuações)
+        return processarSimboloOuOperador();
     }
 
     private Token processarIdentificadorOuPalavraReservada() {
@@ -124,45 +133,33 @@ public class Lex {
         return new Token(tipoToken, lexema.toString(), linhaAtual, colunaInicial);
     }
 
-    private Token processarOperadorOuPontuacao() {
+    private Token processarSimboloOuOperador() {
         int colunaInicial = colunaAtual;
-        char atual = lerCaractereAtual();
-        avancarCaractere();
-
-        switch (atual) {
-            case '<':
-                if (!chegouAoFim() && lerCaractereAtual() == '=') {
-                    avancarCaractere();
-                    return new Token("simb_menor_igual", "<=", linhaAtual, colunaInicial);
-                }
-                if (!chegouAoFim() && lerCaractereAtual() == '>') {
-                    avancarCaractere();
-                    return new Token("simb_diferente", "<>", linhaAtual, colunaInicial);
-                }
-                return new Token("simb_menor", "<", linhaAtual, colunaInicial);
-                
-            case '>':
-                if (!chegouAoFim() && lerCaractereAtual() == '=') {
-                    avancarCaractere();
-                    return new Token("simb_maior_igual", ">=", linhaAtual, colunaInicial);
-                }
-                return new Token("simb_maior", ">", linhaAtual, colunaInicial);
-                
-            case ':':
-                if (!chegouAoFim() && lerCaractereAtual() == '=') {
-                    avancarCaractere();
-                    return new Token("simb_atribuicao", ":=", linhaAtual, colunaInicial);
-                }
-                return new Token("simb_dois_pontos", ":", linhaAtual, colunaInicial);
-                
-            default:
-                String lexema = String.valueOf(atual);
-                String tipoToken = palavrasReservadas.get(lexema);
-                if (tipoToken != null) {
-                    return new Token(tipoToken, lexema, linhaAtual, colunaInicial);
-                }
-                return new Token("simb_desconhecido", lexema, linhaAtual, colunaInicial);
+        char c1 = lerCaractereAtual();
+        
+        // Verifica primeiro se formam um símbolo composto (2 caracteres), como <=, >=, <>, :=
+        if (posicaoAtual + 1 < codigoFonte.length()) {
+            char c2 = codigoFonte.charAt(posicaoAtual + 1);
+            String simboloDuplo = "" + c1 + c2;
+            
+            // Busca na tabela de palavras reservadas
+            if (palavrasReservadas.containsKey(simboloDuplo)) {
+                avancarCaractere(); // consome c1
+                avancarCaractere(); // consome c2
+                return new Token(palavrasReservadas.get(simboloDuplo), simboloDuplo, linhaAtual, colunaInicial);
+            }
         }
+        
+        // Se não for símbolo duplo, processa como símbolo simples (1 caractere)
+        String simboloSimples = String.valueOf(c1);
+        avancarCaractere(); // consome c1
+        
+        String tipoToken = palavrasReservadas.get(simboloSimples);
+        if (tipoToken != null) {
+            return new Token(tipoToken, simboloSimples, linhaAtual, colunaInicial);
+        }
+        
+        return new Token("simb_desconhecido", simboloSimples, linhaAtual, colunaInicial);
     }
 
     private void ignorarCaracteresEmBrancoEComentarios() {
@@ -179,8 +176,7 @@ public class Lex {
                 continue;
             }
 
-            // Tratamento de comentários (exemplo: {...} ou /* ... */ ou // ... )
-            // Aqui estou assumindo bloco de comentário do Pascal/LALG que é { ... }
+            // Tratamento de comentários do tipo { ... }
             if (atual == '{') {
                 avancarCaractere(); // Pula o '{'
                 while (!chegouAoFim() && lerCaractereAtual() != '}') {

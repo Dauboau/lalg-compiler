@@ -21,35 +21,30 @@ public class Compiler {
         }
 
         try {
-            String codigoFonte = new String(Files.readAllBytes(Paths.get(caminhoArquivo)));
-
-            // Impresão no arquivo de saída
             PrintWriter writer = new PrintWriter(new FileWriter(arquivoSaida));
+
+            String codigoFonte = new String(Files.readAllBytes(Paths.get(caminhoArquivo)));
             
             Lex analisadorLexico = new Lex(codigoFonte);
             
             String msgInicio = "Início da análise do arquivo: " + caminhoArquivo;
             System.out.println(msgInicio);
-            writer.println(msgInicio);
             
-            Token token;
-            do {
-                // Chama o analisador léxico várias vezes reconhecendo token por token
-                token = analisadorLexico.proximoToken();
+            Token token = analisadorLexico.proximoToken();
+            while (!token.getTipo().equals("simb_eof")) {
                 
-                // Formata o par <cadeia, token>
                 String linhaSaida = String.format("%s - %s", token.getLexema(), token.getTipo());
                 
                 // Imprime no terminal
                 System.out.println(linhaSaida);
-                // Grava no arquivo
+                // Imprime no arquivo
                 writer.println(linhaSaida);
                 
-            } while (!token.getTipo().equals("simb_eof"));
+                token = analisadorLexico.proximoToken();
+            }
 
             String msgFim = "\nAnálise concluída com sucesso. Saída salva em: " + arquivoSaida;
             System.out.println(msgFim);
-            writer.println(msgFim);
 
             writer.close();
         } catch (IOException e) {
