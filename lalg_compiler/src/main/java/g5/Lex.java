@@ -2,6 +2,9 @@ package g5;
 
 import java.io.FileInputStream;
 
+/**
+ * Classe Lex, responsável pela Análise Léxixa.
+ */
 public class Lex {
 
     private LALG analisadorLexico;
@@ -37,6 +40,10 @@ public class Lex {
         return "desconhecido";
     }
 
+    /**
+     * Obtém o próximo token do analisador léxico.
+     * @return O próximo token encontrado no arquivo fonte, ou um token EOF se o final do arquivo for alcançado.
+     */
     public Token getNextToken() {
         return this.analisadorLexico.getNextToken();
     }

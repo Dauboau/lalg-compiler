@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
- * Classe principal do Compilador!
+ * Classe principal do Compilador.
  */
 public class Compiler {
 
