@@ -1,0 +1,8 @@
+program teste;
+var A, B : integer;
+begin
+    A := 10;
+    B := A * 2;
+    if A < B then
+        write(B)
+end.

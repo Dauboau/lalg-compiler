@@ -1,0 +1,36 @@
+Início da análise do arquivo: ./programa_1.lalg
+program - simb_program
+teste - simb_identificador
+; - simb_ponto_virgula
+var - simb_var
+A - simb_identificador
+, - simb_virgula
+B - simb_identificador
+: - simb_dois_pontos
+integer - simb_tipo_inteiro
+; - simb_ponto_virgula
+begin - simb_iniciar
+A - simb_identificador
+:= - simb_atribuicao
+10 - simb_numero_inteiro
+; - simb_ponto_virgula
+B - simb_identificador
+:= - simb_atribuicao
+A - simb_identificador
+* - simb_asterisco
+2 - simb_numero_inteiro
+; - simb_ponto_virgula
+if - simb_se
+A - simb_identificador
+< - simb_menor
+B - simb_identificador
+then - simb_entao
+write - simb_escreva
+( - simb_abre_parenteses
+B - simb_identificador
+) - simb_fecha_parenteses
+end - simb_fim
+. - simb_ponto
+EOF - simb_eof
+
+Análise concluída com sucesso. Saída salva em: ./programa_1_saida.txt
