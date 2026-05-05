@@ -1,3 +1,8 @@
-g5/Token.class
-g5/Lex.class
+g5/LALGConstants.class
+g5/ParseException.class
+g5/SimpleCharStream.class
+g5/LALGTokenManager.class
+g5/TokenMgrError.class
 g5/Compiler.class
+g5/LALG.class
+g5/Token.class

@@ -10,6 +10,21 @@ import java.nio.file.Paths;
  * Classe principal do Compilador!
  */
 public class Compiler {
+    
+    // Método auxiliar para buscar o nome da constante via reflexão
+    public static String getTokenName(int kind) {
+        for (java.lang.reflect.Field f : LALGConstants.class.getDeclaredFields()) {
+            try {
+                if (f.getType() == int.class && f.getInt(null) == kind) {
+                    return f.getName().toLowerCase();
+                }
+            } catch (Exception e) {
+                // Ignore
+            }
+        }
+        return "desconhecido";
+    }
+
     public static void main(String[] args) {
 
         // Utiliza o programa default (programa_1) ou o caminho do arquivo passado como argumento
@@ -23,24 +38,27 @@ public class Compiler {
         try {
             PrintWriter writer = new PrintWriter(new FileWriter(arquivoSaida));
 
-            String codigoFonte = new String(Files.readAllBytes(Paths.get(caminhoArquivo)));
+            // No JavaCC, usamos FileInputStream
+            java.io.FileInputStream fis = new java.io.FileInputStream(caminhoArquivo);
             
-            Lex analisadorLexico = new Lex(codigoFonte);
+            // Instancia o analisador léxico gerado pelo JavaCC
+            LALG analisadorLexico = new LALG(fis);
             
             String msgInicio = "Início da análise do arquivo: " + caminhoArquivo;
             System.out.println(msgInicio);
             
-            Token token = analisadorLexico.proximoToken();
-            while (!token.getTipo().equals("simb_eof")) {
+            Token token = analisadorLexico.getNextToken();
+            while (token.kind != LALGConstants.EOF) {
                 
-                String linhaSaida = String.format("%s - %s", token.getLexema(), token.getTipo());
+                String tipoNome = getTokenName(token.kind);
+                String linhaSaida = String.format("%s - %s", token.image, tipoNome);
                 
                 // Imprime no terminal
                 System.out.println(linhaSaida);
                 // Imprime no arquivo
                 writer.println(linhaSaida);
                 
-                token = analisadorLexico.proximoToken();
+                token = analisadorLexico.getNextToken();
             }
 
             String msgFim = "\nAnálise concluída com sucesso. Saída salva em: " + arquivoSaida;

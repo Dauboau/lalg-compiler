@@ -1,0 +1,72 @@
+options {
+    STATIC = false;
+}
+
+PARSER_BEGIN(LALG)
+
+package g5;
+
+public class LALG {
+}
+
+PARSER_END(LALG)
+
+/* ESPAÇOS EM BRANCO E COMENTÁRIOS */
+SKIP :
+{
+    " "
+  | "\t"
+  | "\n"
+  | "\r"
+  | <"{" (~["}"])* "}">
+}
+
+/* PALAVRAS RESERVADAS */
+TOKEN :
+{
+    < SIMB_PROGRAM: "program" >
+  | < SIMB_INICIAR: "begin" >
+  | < SIMB_FIM: "end" >
+  | < SIMB_CONST: "const" >
+  | < SIMB_VAR: "var" >
+  | < SIMB_TIPO_REAL: "real" >
+  | < SIMB_TIPO_INTEIRO: "integer" >
+  | < SIMB_PROCEDIMENTO: "procedure" >
+  | < SIMB_SE: "if" >
+  | < SIMB_ENTAO: "then" >
+  | < SIMB_SENAO: "else" >
+  | < SIMB_LEIA: "read" >
+  | < SIMB_ESCREVA: "write" >
+  | < SIMB_ENQUANTO: "while" >
+  | < SIMB_FACA: "do" >
+}
+
+/* OPERADORES E PONTUAÇÃO */
+TOKEN :
+{
+    < SIMB_ATRIBUICAO: ":=" >
+  | < SIMB_DOIS_PONTOS: ":" >
+  | < SIMB_MENOR_IGUAL: "<=" >
+  | < SIMB_DIFERENTE: "<>" >
+  | < SIMB_MENOR: "<" >
+  | < SIMB_MAIOR_IGUAL: ">=" >
+  | < SIMB_MAIOR: ">" >
+  | < SIMB_MAIS: "+" >
+  | < SIMB_MENOS: "-" >
+  | < SIMB_ASTERISCO: "*" >
+  | < SIMB_BARRA: "/" >
+  | < SIMB_IGUAL: "=" >
+  | < SIMB_PONTO_VIRGULA: ";" >
+  | < SIMB_PONTO: "." >
+  | < SIMB_VIRGULA: "," >
+  | < SIMB_ABRE_PARENTESES: "(" >
+  | < SIMB_FECHA_PARENTESES: ")" >
+}
+
+/* NÚMEROS E IDENTIFICADORES */
+TOKEN :
+{
+    < SIMB_NUMERO_REAL: (["0"-"9"])+ "." (["0"-"9"])+ >
+  | < SIMB_NUMERO_INTEIRO: (["0"-"9"])+ >
+  | < SIMB_IDENTIFICADOR: ["a"-"z", "A"-"Z"] (["a"-"z", "A"-"Z", "0"-"9", "_"])* >
+}
