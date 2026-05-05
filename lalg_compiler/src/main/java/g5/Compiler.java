@@ -3,27 +3,11 @@ package g5;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 /**
  * Classe principal do Compilador!
  */
 public class Compiler {
-    
-    // Método auxiliar para buscar o nome da constante via reflexão
-    public static String getTokenName(int kind) {
-        for (java.lang.reflect.Field f : LALGConstants.class.getDeclaredFields()) {
-            try {
-                if (f.getType() == int.class && f.getInt(null) == kind) {
-                    return f.getName().toLowerCase();
-                }
-            } catch (Exception e) {
-                // Ignore
-            }
-        }
-        return "desconhecido";
-    }
 
     public static void main(String[] args) {
 
@@ -38,19 +22,17 @@ public class Compiler {
         try {
             PrintWriter writer = new PrintWriter(new FileWriter(arquivoSaida));
 
-            // No JavaCC, usamos FileInputStream
             java.io.FileInputStream fis = new java.io.FileInputStream(caminhoArquivo);
             
-            // Instancia o analisador léxico gerado pelo JavaCC
-            LALG analisadorLexico = new LALG(fis);
+            Lex lex = new Lex(fis);
             
             String msgInicio = "Início da análise do arquivo: " + caminhoArquivo;
             System.out.println(msgInicio);
             
-            Token token = analisadorLexico.getNextToken();
+            Token token = lex.getNextToken();
             while (token.kind != LALGConstants.EOF) {
                 
-                String tipoNome = getTokenName(token.kind);
+                String tipoNome = Lex.getTokenName(token.kind);
                 String linhaSaida = String.format("%s - %s", token.image, tipoNome);
                 
                 // Imprime no terminal
@@ -58,7 +40,7 @@ public class Compiler {
                 // Imprime no arquivo
                 writer.println(linhaSaida);
                 
-                token = analisadorLexico.getNextToken();
+                token = lex.getNextToken();
             }
 
             String msgFim = "\nAnálise concluída com sucesso. Saída salva em: " + arquivoSaida;
