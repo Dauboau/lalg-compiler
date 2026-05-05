@@ -12,6 +12,7 @@ public class LALG {
 PARSER_END(LALG)
 
 /* ESPAÇOS EM BRANCO E COMENTÁRIOS */
+/* Comentários do tipo {...} */
 SKIP :
 {
     " "
@@ -66,7 +67,7 @@ TOKEN :
 /* NÚMEROS E IDENTIFICADORES */
 TOKEN :
 {
-    < SIMB_NUMERO_REAL: (["0"-"9"])+ "." (["0"-"9"])+ >
-  | < SIMB_NUMERO_INTEIRO: (["0"-"9"])+ >
-  | < SIMB_IDENTIFICADOR: ["a"-"z", "A"-"Z"] (["a"-"z", "A"-"Z", "0"-"9", "_"])* >
+    < NUMERO_REAL: (["0"-"9"])+ "." (["0"-"9"])+ >
+  | < NUMERO_INTEIRO: (["0"-"9"])+ >
+  | < ID: ["a"-"z", "A"-"Z"] (["a"-"z", "A"-"Z", "0"-"9"])* >
 }

@@ -75,11 +75,11 @@ public interface LALGConstants {
   /** RegularExpression Id. */
   int SIMB_FECHA_PARENTESES = 37;
   /** RegularExpression Id. */
-  int SIMB_NUMERO_REAL = 38;
+  int NUMERO_REAL = 38;
   /** RegularExpression Id. */
-  int SIMB_NUMERO_INTEIRO = 39;
+  int NUMERO_INTEIRO = 39;
   /** RegularExpression Id. */
-  int SIMB_IDENTIFICADOR = 40;
+  int ID = 40;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -124,9 +124,9 @@ public interface LALGConstants {
     "\",\"",
     "\"(\"",
     "\")\"",
-    "<SIMB_NUMERO_REAL>",
-    "<SIMB_NUMERO_INTEIRO>",
-    "<SIMB_IDENTIFICADOR>",
+    "<NUMERO_REAL>",
+    "<NUMERO_INTEIRO>",
+    "<ID>",
   };
 
 }
