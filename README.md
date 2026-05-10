@@ -12,5 +12,5 @@ mvn compile
 
 3. Execute o compilador passando o arquivo de entrada:
 ```bash
-mvn exec:java -Dexec.args="../programa_1.lalg"
+mvn exec:java -Dexec.args="programa_1.lalg"
 ```
