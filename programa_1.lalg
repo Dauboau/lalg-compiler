@@ -1,5 +1,5 @@
 program teste;
-var A_2, B : integer;
+var A2, B : integer;
 begin
     A := 10;
     B := A * 2;

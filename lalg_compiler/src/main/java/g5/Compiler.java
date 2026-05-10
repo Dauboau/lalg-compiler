@@ -26,7 +26,7 @@ public class Compiler {
             
             Lex lex = new Lex(fis);
             
-            String msgInicio = "Início da análise do arquivo: " + caminhoArquivo;
+            String msgInicio = "Início da análise do arquivo: " + caminhoArquivo + '\n';
             System.out.println(msgInicio);
             
             Token token = lex.getNextToken();
