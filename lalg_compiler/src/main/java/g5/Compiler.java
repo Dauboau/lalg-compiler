@@ -1,5 +1,6 @@
 package g5;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -11,13 +12,37 @@ public class Compiler {
 
     public static void main(String[] args) {
 
-        // Utiliza o programa default (programa_1) ou o caminho do arquivo passado como argumento
-        String caminhoArquivo = args.length > 0 ? args[0] : "./programa_1.lalg";
-        
-        String arquivoSaida = caminhoArquivo.replace(".lalg", "_saida.txt");
-        if (!arquivoSaida.endsWith("_saida.txt")) {
-            arquivoSaida += "_saida.txt";
+        File inputDir = new File("input");
+        File outputDir = new File("output");
+
+        if (!inputDir.exists()) {
+            System.err.println("A pasta 'input' não foi encontrada.");
+            return;
         }
+
+        if (!outputDir.exists()) {
+            outputDir.mkdirs();
+        }
+
+        // Utiliza o programa default (programa_1) ou o caminho do arquivo passado como argumento
+        String nomeArquivo = args.length > 0 ? args[0] : "programa_1.lalg";
+        
+        nomeArquivo = new File(nomeArquivo).getName();
+        if (!nomeArquivo.endsWith(".lalg")) {
+            nomeArquivo += ".lalg";
+        }
+
+        File arquivoEntrada = new File(inputDir, nomeArquivo);
+        String caminhoArquivo = arquivoEntrada.getPath();
+
+        if (!arquivoEntrada.exists()) {
+            System.err.println("O arquivo fonte não foi encontrado na pasta 'input': " + caminhoArquivo);
+            return;
+        }
+
+        String nomeArquivoSaida = nomeArquivo.replace(".lalg", "_saida.txt");
+        File arquivoSaidaFile = new File(outputDir, nomeArquivoSaida);
+        String arquivoSaida = arquivoSaidaFile.getPath();
 
         try {
             PrintWriter writer = new PrintWriter(new FileWriter(arquivoSaida));

@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Executar Compilador",
+            "request": "launch",
+            "mainClass": "g5.Compiler",
+            "cwd": "${workspaceFolder}/lalg_compiler"
+        }
+    ]
+}
