@@ -3,6 +3,10 @@ lalg - id
 ; - simb_ponto_virgula
 var - simb_var
 a - id
+, - simb_virgula
+minha - id
+_ - erro_simbolo_nao_pertencente
+variavel - id
 : - simb_dois_pontos
 integer - simb_tipo_inteiro
 ; - simb_ponto_virgula
@@ -13,7 +17,7 @@ a - id
 , - simb_virgula
 @ - erro_simbolo_nao_pertencente
 , - simb_virgula
-1 - numero_inteiro
+1.a23 - erro_numero_real_mal_formado
 ) - simb_fecha_parenteses
 ; - simb_ponto_virgula
 end - simb_fim

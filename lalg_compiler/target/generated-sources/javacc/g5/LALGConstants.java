@@ -81,7 +81,11 @@ public interface LALGConstants {
   /** RegularExpression Id. */
   int ID = 40;
   /** RegularExpression Id. */
-  int ERRO = 41;
+  int ERRO_IDENTIFICADOR_MAL_FORMADO = 41;
+  /** RegularExpression Id. */
+  int ERRO_NUMERO_REAL_MAL_FORMADO = 42;
+  /** RegularExpression Id. */
+  int ERRO_SIMBOLO_NAO_PERTENCENTE = 43;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -129,7 +133,9 @@ public interface LALGConstants {
     "<NUMERO_REAL>",
     "<NUMERO_INTEIRO>",
     "<ID>",
-    "<ERRO>",
+    "<ERRO_IDENTIFICADOR_MAL_FORMADO>",
+    "<ERRO_NUMERO_REAL_MAL_FORMADO>",
+    "<ERRO_SIMBOLO_NAO_PERTENCENTE>",
   };
 
 }
