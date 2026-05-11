@@ -15,7 +15,7 @@ Trabalho do grupo 5 da disciplina SCC0217 - Linguagens de Programação e Compil
 
 2. Compile o projeto:
 ```bash
-mvn compile
+mvn clean compile
 ```
 
 3. Execute o compilador passando o arquivo de entrada:
