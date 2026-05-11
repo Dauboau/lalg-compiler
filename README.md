@@ -1,5 +1,13 @@
 # lalg-compiler
-Trabalho do grupo 5 da disciplina de Compiladores - SCC0217
+
+Trabalho do grupo 5 da disciplina SCC0217 - Linguagens de Programação e Compiladores.
+
+- Daniel Contente Romanzini - 12547614
+- Gabriel Barbosa de Oliveira - 12543415
+- Felipe Seiji Momma Valente - 12543700
+- Raul Ribeiro Teles - 13688176
+- Victor Hugo Oliveira da Silva - 11320901
+- Fernando de Souza Lincoln – 10716960
 
 ## Como executar
 
