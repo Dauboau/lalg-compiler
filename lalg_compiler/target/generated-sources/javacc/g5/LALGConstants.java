@@ -41,51 +41,55 @@ public interface LALGConstants {
   /** RegularExpression Id. */
   int SIMB_FACA = 20;
   /** RegularExpression Id. */
-  int SIMB_ATRIBUICAO = 21;
+  int SIMB_PARA = 21;
   /** RegularExpression Id. */
-  int SIMB_DOIS_PONTOS = 22;
+  int SIMB_ATE = 22;
   /** RegularExpression Id. */
-  int SIMB_MENOR_IGUAL = 23;
+  int SIMB_ATRIBUICAO = 23;
   /** RegularExpression Id. */
-  int SIMB_DIFERENTE = 24;
+  int SIMB_DOIS_PONTOS = 24;
   /** RegularExpression Id. */
-  int SIMB_MENOR = 25;
+  int SIMB_MENOR_IGUAL = 25;
   /** RegularExpression Id. */
-  int SIMB_MAIOR_IGUAL = 26;
+  int SIMB_DIFERENTE = 26;
   /** RegularExpression Id. */
-  int SIMB_MAIOR = 27;
+  int SIMB_MENOR = 27;
   /** RegularExpression Id. */
-  int SIMB_MAIS = 28;
+  int SIMB_MAIOR_IGUAL = 28;
   /** RegularExpression Id. */
-  int SIMB_MENOS = 29;
+  int SIMB_MAIOR = 29;
   /** RegularExpression Id. */
-  int SIMB_ASTERISCO = 30;
+  int SIMB_MAIS = 30;
   /** RegularExpression Id. */
-  int SIMB_BARRA = 31;
+  int SIMB_MENOS = 31;
   /** RegularExpression Id. */
-  int SIMB_IGUAL = 32;
+  int SIMB_ASTERISCO = 32;
   /** RegularExpression Id. */
-  int SIMB_PONTO_VIRGULA = 33;
+  int SIMB_BARRA = 33;
   /** RegularExpression Id. */
-  int SIMB_PONTO = 34;
+  int SIMB_IGUAL = 34;
   /** RegularExpression Id. */
-  int SIMB_VIRGULA = 35;
+  int SIMB_PONTO_VIRGULA = 35;
   /** RegularExpression Id. */
-  int SIMB_ABRE_PARENTESES = 36;
+  int SIMB_PONTO = 36;
   /** RegularExpression Id. */
-  int SIMB_FECHA_PARENTESES = 37;
+  int SIMB_VIRGULA = 37;
   /** RegularExpression Id. */
-  int NUMERO_REAL = 38;
+  int SIMB_ABRE_PARENTESES = 38;
   /** RegularExpression Id. */
-  int NUMERO_INTEIRO = 39;
+  int SIMB_FECHA_PARENTESES = 39;
   /** RegularExpression Id. */
-  int ID = 40;
+  int NUMERO_REAL = 40;
   /** RegularExpression Id. */
-  int ERRO_IDENTIFICADOR_MAL_FORMADO = 41;
+  int NUMERO_INTEIRO = 41;
   /** RegularExpression Id. */
-  int ERRO_NUMERO_REAL_MAL_FORMADO = 42;
+  int ID = 42;
   /** RegularExpression Id. */
-  int ERRO_SIMBOLO_NAO_PERTENCENTE = 43;
+  int ERRO_IDENTIFICADOR_MAL_FORMADO = 43;
+  /** RegularExpression Id. */
+  int ERRO_NUMERO_REAL_MAL_FORMADO = 44;
+  /** RegularExpression Id. */
+  int ERRO_SIMBOLO_NAO_PERTENCENTE = 45;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -113,6 +117,8 @@ public interface LALGConstants {
     "\"write\"",
     "\"while\"",
     "\"do\"",
+    "\"for\"",
+    "\"to\"",
     "\":=\"",
     "\":\"",
     "\"<=\"",

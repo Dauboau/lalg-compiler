@@ -43,11 +43,11 @@ a1 - id
 ; - simb_ponto_virgula
 end - simb_fim
 ; - simb_ponto_virgula
-for - id
+for - simb_para
 b - id
 := - simb_atribuicao
 1 - numero_inteiro
-to - id
+to - simb_ate
 10 - numero_inteiro
 do - simb_faca
 begin - simb_iniciar

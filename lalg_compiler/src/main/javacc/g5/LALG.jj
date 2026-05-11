@@ -40,6 +40,8 @@ TOKEN :
   | < SIMB_ESCREVA: "write" >
   | < SIMB_ENQUANTO: "while" >
   | < SIMB_FACA: "do" >
+  | < SIMB_PARA: "for" >
+  | < SIMB_ATE: "to" >
 }
 
 /* OPERADORES E PONTUAÇÃO */
