@@ -71,3 +71,10 @@ TOKEN :
   | < NUMERO_INTEIRO: (["0"-"9"])+ >
   | < ID: ["a"-"z", "A"-"Z"] (["a"-"z", "A"-"Z", "0"-"9"])* >
 }
+
+/* ERRO LÉXICO - SÍMBOLO NÃO PERTENCENTE A LINGUAGEM */
+/* ~[] INCLUI QUALQUER CARACTERE */
+TOKEN :
+{
+    < ERRO: ~[] >
+}

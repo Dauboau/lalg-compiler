@@ -80,6 +80,8 @@ public interface LALGConstants {
   int NUMERO_INTEIRO = 39;
   /** RegularExpression Id. */
   int ID = 40;
+  /** RegularExpression Id. */
+  int ERRO = 41;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -127,6 +129,7 @@ public interface LALGConstants {
     "<NUMERO_REAL>",
     "<NUMERO_INTEIRO>",
     "<ID>",
+    "<ERRO>",
   };
 
 }
