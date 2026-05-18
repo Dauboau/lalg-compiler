@@ -49,26 +49,21 @@ public class Compiler {
 
             java.io.FileInputStream fis = new java.io.FileInputStream(caminhoArquivo);
             
-            Lex lex = new Lex(fis);
+            Sint sint = new Sint(fis);
             
-            String msgInicio = "Início da análise do arquivo: " + caminhoArquivo + '\n';
+            String msgInicio = "Início da análise (Léxica e Sintática) do arquivo: " + caminhoArquivo + '\n';
             System.out.println(msgInicio);
+            writer.println(msgInicio);
             
-            Token token = lex.getNextToken();
-            while (token.kind != LALGConstants.EOF) {
-                
-                String tipoNome = Lex.getTokenName(token.kind);
-                String linhaSaida = String.format("%s - %s", token.image, tipoNome);
-                
-                // Imprime no terminal
-                System.out.println(linhaSaida);
-                // Imprime no arquivo
-                writer.println(linhaSaida);
-                
-                token = lex.getNextToken();
-            }
+            // Invoca a análise
+            boolean isSucesso = sint.parse();
 
-            String msgFim = "\nAnálise concluída com sucesso. Saída salva em: " + arquivoSaida;
+            String msgFim;
+            if (isSucesso) {
+                msgFim = "\nAnálise Sintática e Léxica concluída SEM ERROS com sucesso. Saída salva em: " + arquivoSaida;
+            } else {
+                msgFim = "\nAnálise falhou. O arquivo possui erros sintáticos (verifique o console). Saída salva em: " + arquivoSaida;
+            }
             System.out.println(msgFim);
 
             writer.close();

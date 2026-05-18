@@ -7,9 +7,37 @@ PARSER_BEGIN(LALG)
 package g5;
 
 public class LALG {
+
+    // Contador de erros sintáticos
+    int syntaxErrors = 0;
+
+    // Tratamento de Erro (Modo Pânico)
+    void panicMode(ParseException e, int[] syncTokens) {
+        syntaxErrors++;
+        System.err.println("Erro sintático detectado: " + e.getMessage());
+        
+        Token t = getToken(1);
+        boolean sync = false;
+        
+        // Pula os tokens até encontrar um token de sincronização (ex: PONTO E VÍRGULA, END, etc)
+        while (t.kind != EOF) {
+            for (int syncToken : syncTokens) {
+                if (t.kind == syncToken) {
+                    sync = true;
+                    break;
+                }
+            }
+            if (sync) break;
+            t = getNextToken();
+        }
+    }
 }
 
 PARSER_END(LALG)
+
+/* ========================================================= */
+/*                   REGRAS LÉXICAS                       */
+/* ========================================================= */
 
 /* ESPAÇOS EM BRANCO E COMENTÁRIOS */
 /* Comentários do tipo {...} */
@@ -80,4 +108,156 @@ TOKEN :
     < ERRO_IDENTIFICADOR_MAL_FORMADO: (["0"-"9"])+ ["a"-"z", "A"-"Z"] (["a"-"z", "A"-"Z", "0"-"9"])* >
     | < ERRO_NUMERO_REAL_MAL_FORMADO: (["0"-"9"])+ "." (["0"-"9"])* ["a"-"z", "A"-"Z"] (["a"-"z", "A"-"Z", "0"-"9"])* >
     | < ERRO_SIMBOLO_NAO_PERTENCENTE: ~[] >
+}
+
+/* ========================================================= */
+/*                   REGRAS SINTÁTICAS                       */
+/* ========================================================= */
+
+void programa() : {}
+{
+    <SIMB_PROGRAM> <ID> <SIMB_PONTO_VIRGULA>
+    corpo()
+    <SIMB_PONTO>
+    <EOF>
+}
+
+void corpo() : {}
+{
+    dc()
+    <SIMB_INICIAR> comandos() <SIMB_FIM>
+}
+
+void dc() : {}
+{
+    dc_c() dc_v() dc_p()
+}
+
+void dc_c() : {}
+{
+    ( <SIMB_CONST> <ID> <SIMB_IGUAL> numero() <SIMB_PONTO_VIRGULA> )*
+}
+
+void dc_v() : {}
+{
+    ( <SIMB_VAR> variaveis() <SIMB_DOIS_PONTOS> tipo_var() <SIMB_PONTO_VIRGULA> )*
+}
+
+void tipo_var() : {}
+{
+    <SIMB_TIPO_REAL> | <SIMB_TIPO_INTEIRO>
+}
+
+void variaveis() : {}
+{
+    <ID> ( <SIMB_VIRGULA> <ID> )*
+}
+
+void dc_p() : {}
+{
+    ( <SIMB_PROCEDIMENTO> <ID> parametros() <SIMB_PONTO_VIRGULA> corpo_p() )*
+}
+
+void parametros() : {}
+{
+    ( <SIMB_ABRE_PARENTESES> lista_par() <SIMB_FECHA_PARENTESES> )?
+}
+
+void lista_par() : {}
+{
+    variaveis() <SIMB_DOIS_PONTOS> tipo_var() ( <SIMB_PONTO_VIRGULA> variaveis() <SIMB_DOIS_PONTOS> tipo_var() )*
+}
+
+void corpo_p() : {}
+{
+    dc_loc() <SIMB_INICIAR> comandos() <SIMB_FIM> <SIMB_PONTO_VIRGULA>
+}
+
+void dc_loc() : {}
+{
+    dc_v()
+}
+
+void lista_arg() : {}
+{
+    ( <SIMB_ABRE_PARENTESES> argumentos() <SIMB_FECHA_PARENTESES> )?
+}
+
+void argumentos() : {}
+{
+    <ID> ( <SIMB_PONTO_VIRGULA> <ID> )*
+}
+
+void comandos() : {}
+{
+    ( cmd() <SIMB_PONTO_VIRGULA> )*
+}
+
+void cmd() : {}
+{
+    try {
+        (
+            <SIMB_LEIA> <SIMB_ABRE_PARENTESES> variaveis() <SIMB_FECHA_PARENTESES>
+          | <SIMB_ESCREVA> <SIMB_ABRE_PARENTESES> variaveis() <SIMB_FECHA_PARENTESES>
+          | <SIMB_ENQUANTO> <SIMB_ABRE_PARENTESES> condicao() <SIMB_FECHA_PARENTESES> <SIMB_FACA> cmd()
+          | <SIMB_SE> condicao() <SIMB_ENTAO> cmd() pfalsa()
+          | <SIMB_PARA> <ID> <SIMB_ATRIBUICAO> expressao() <SIMB_ATE> expressao() <SIMB_FACA> cmd()
+          | LOOKAHEAD(2) <ID> <SIMB_ATRIBUICAO> expressao()
+          | <ID> lista_arg()
+          | <SIMB_INICIAR> comandos() <SIMB_FIM>
+        )
+    } catch (ParseException e) {
+        // Modo Pânico: consome tokens até achar um fim possível de comando
+        panicMode(e, new int[]{ SIMB_PONTO_VIRGULA, SIMB_FIM });
+    }
+}
+
+void pfalsa() : {}
+{
+    ( <SIMB_SENAO> cmd() )?
+}
+
+void condicao() : {}
+{
+    expressao() relacao() expressao()
+}
+
+void relacao() : {}
+{
+    <SIMB_IGUAL> | <SIMB_DIFERENTE> | <SIMB_MAIOR_IGUAL> | <SIMB_MENOR_IGUAL> | <SIMB_MAIOR> | <SIMB_MENOR>
+}
+
+void expressao() : {}
+{
+    termo() ( op_ad() termo() )*
+}
+
+void op_ad() : {}
+{
+    <SIMB_MAIS> | <SIMB_MENOS>
+}
+
+void termo() : {}
+{
+    op_un() fator() ( op_mul() fator() )*
+}
+
+void op_un() : {}
+{
+    ( <SIMB_MAIS> | <SIMB_MENOS> )?
+}
+
+void op_mul() : {}
+{
+    <SIMB_ASTERISCO> | <SIMB_BARRA>
+}
+
+void fator() : {}
+{
+    <ID> | numero() | <SIMB_ABRE_PARENTESES> expressao() <SIMB_FECHA_PARENTESES>
+}
+
+void numero() : {}
+{
+    <NUMERO_INTEIRO> | <NUMERO_REAL>
 }

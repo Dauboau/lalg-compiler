@@ -8,7 +8,7 @@ import java.lang.reflect.Field;
  */
 public class Lex {
 
-    private LALG analisadorLexico;
+    protected LALG analisadorJavaCC;
 
     /**
      * Construtor do Lex, 
@@ -18,7 +18,7 @@ public class Lex {
      * @param fis O FileInputStream do arquivo fonte a ser analisado.
      */
     public Lex(FileInputStream fis) {
-        analisadorLexico = new LALG(fis);
+        analisadorJavaCC = new LALG(fis);
     }
 
     /**
@@ -46,7 +46,7 @@ public class Lex {
      * @return O próximo token encontrado no arquivo fonte, ou um token EOF se o final do arquivo for alcançado.
      */
     public Token getNextToken() {
-        return this.analisadorLexico.getNextToken();
+        return this.analisadorJavaCC.getNextToken();
     }
 
 }
