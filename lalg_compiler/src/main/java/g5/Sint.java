@@ -1,6 +1,7 @@
 package g5;
 
 import java.io.FileInputStream;
+import java.io.PrintWriter;
 
 /**
  * Classe SINT, responsável pela Análise Sintática.
@@ -15,9 +16,15 @@ public class Sint extends Lex {
      * para inicializar o analisador sintático 
      * gerado pelo JavaCC (LALG).
      * @param fis O FileInputStream do arquivo fonte a ser analisado.
+     * @param writer O PrintWriter para escrever a saída.
      */
     public Sint(FileInputStream fis) {
         super(fis);
+        analisadorJavaCC.sint = this;
+    }
+
+    public Sint(FileInputStream fis, PrintWriter writer) {
+        super(fis, writer);
         analisadorJavaCC.sint = this;
     }
 
@@ -27,10 +34,20 @@ public class Sint extends Lex {
      * @param syncTokens Um array de códigos de tokens que servem como pontos de sincronização para retomar a análise após um erro.
      */
     public void modoPanico(ParseException e, int[] syncTokens) {
-        errosSint++;
-        System.err.println("Erro sintático detectado: " + e.getMessage());
-        
+
         Token t = analisadorJavaCC.getToken(1);
+        
+        String msgErro;
+        if(isTokenError(t.kind)) {
+            this.errosLex++;
+            msgErro = "Erro léxico detectado: " + e.getMessage();
+        }else{
+            errosSint++;
+            msgErro = "Erro sintático detectado: " + e.getMessage();
+        }
+        System.err.println(msgErro);
+        this.writer.println(msgErro);
+        
         boolean sync = false;
         
         while (t.kind != LALGConstants.EOF) {
@@ -52,9 +69,12 @@ public class Sint extends Lex {
         try {
             analisadorJavaCC.programa();
             if (this.errosSint > 0) {
-                System.out.println("Análise concluída, porém com " + this.errosSint + " erro(s) sintático(s) estrutural(is).");
+                String msgErro = "Análise concluída, porém com " + this.errosLex + " erro(s) léxico(s) e " + this.errosSint + " erro(s) sintático(s).";
+                System.out.println(msgErro);
+                this.writer.println(msgErro);
                 return false;
             }
+
             return true;
         } catch (ParseException e) {
             System.err.println("Erro Crítico Sintático (forado modo pânico): " + e.getMessage());

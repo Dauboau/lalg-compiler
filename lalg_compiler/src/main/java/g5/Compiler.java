@@ -49,21 +49,23 @@ public class Compiler {
 
             java.io.FileInputStream fis = new java.io.FileInputStream(caminhoArquivo);
             
-            Sint sint = new Sint(fis);
+            Sint sint = new Sint(fis, writer);
             
             String msgInicio = "Início da análise (Léxica e Sintática) do arquivo: " + caminhoArquivo + '\n';
             System.out.println(msgInicio);
+            writer.println(msgInicio);
             
             // Invoca a análise
             boolean isSucesso = sint.parse();
 
             String msgFim;
             if (isSucesso) {
-                msgFim = "\nAnálise Léxica e Sintática concluída sem erros. Saída salva em: " + arquivoSaida;
+                msgFim = "Análise Léxica e Sintática concluída sem erros. Saída salva em: " + arquivoSaida;
             } else {
-                msgFim = "\nAnálise falhou. O arquivo possui erros léxicos e/ou sintáticos (verifique o console). Saída salva em: " + arquivoSaida;
+                msgFim = "Análise falhou. O arquivo possui erros léxicos e/ou sintáticos (verifique o console). Saída salva em: " + arquivoSaida;
             }
             System.out.println(msgFim);
+            writer.println(msgFim);
 
             writer.close();
         } catch (IOException e) {

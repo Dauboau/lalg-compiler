@@ -1,6 +1,7 @@
 package g5;
 
 import java.io.FileInputStream;
+import java.io.PrintWriter;
 import java.lang.reflect.Field;
 
 /**
@@ -9,6 +10,10 @@ import java.lang.reflect.Field;
 public class Lex {
 
     protected LALG analisadorJavaCC;
+
+    protected PrintWriter writer;
+
+    protected int errosLex = 0;
 
     /**
      * Construtor do Lex, 
@@ -19,6 +24,11 @@ public class Lex {
      */
     public Lex(FileInputStream fis) {
         analisadorJavaCC = new LALG(fis);
+    }
+
+    public Lex(FileInputStream fis, PrintWriter writer) {
+        analisadorJavaCC = new LALG(fis);
+        this.writer = writer;
     }
 
     /**
@@ -39,6 +49,15 @@ public class Lex {
             }
         }
         return "desconhecido";
+    }
+
+    
+    public static boolean isTokenError(int kind) {
+        String tokenName = getTokenName(kind);
+        if (tokenName.startsWith("erro_")) {
+            return true;
+        }
+        return false;
     }
 
     /**
