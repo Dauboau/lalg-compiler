@@ -59,9 +59,9 @@ public class Compiler {
 
             String msgFim;
             if (isSucesso) {
-                msgFim = "\nAnálise Sintática e Léxica concluída SEM ERROS com sucesso. Saída salva em: " + arquivoSaida;
+                msgFim = "\nAnálise Léxica e Sintática concluída sem erros. Saída salva em: " + arquivoSaida;
             } else {
-                msgFim = "\nAnálise falhou. O arquivo possui erros sintáticos (verifique o console). Saída salva em: " + arquivoSaida;
+                msgFim = "\nAnálise falhou. O arquivo possui erros léxicos e/ou sintáticos (verifique o console). Saída salva em: " + arquivoSaida;
             }
             System.out.println(msgFim);
 
