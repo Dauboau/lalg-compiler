@@ -53,7 +53,6 @@ public class Compiler {
             
             String msgInicio = "Início da análise (Léxica e Sintática) do arquivo: " + caminhoArquivo + '\n';
             System.out.println(msgInicio);
-            writer.println(msgInicio);
             
             // Invoca a análise
             boolean isSucesso = sint.parse();

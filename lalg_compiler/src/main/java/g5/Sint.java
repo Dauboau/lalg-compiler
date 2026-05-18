@@ -7,6 +7,8 @@ import java.io.FileInputStream;
  */
 public class Sint extends Lex {
 
+    public int errosSint = 0;
+
     /**
      * Construtor do Sint, 
      * recebe um FileInputStream 
@@ -16,6 +18,26 @@ public class Sint extends Lex {
      */
     public Sint(FileInputStream fis) {
         super(fis);
+        analisadorJavaCC.sint = this;
+    }
+
+    public void modoPanico(ParseException e, int[] syncTokens) {
+        errosSint++;
+        System.err.println("Erro sintático detectado: " + e.getMessage());
+        
+        Token t = analisadorJavaCC.getToken(1);
+        boolean sync = false;
+        
+        while (t.kind != LALGConstants.EOF) {
+            for (int syncToken : syncTokens) {
+                if (t.kind == syncToken) {
+                    sync = true;
+                    break;
+                }
+            }
+            if (sync) break;
+            t = analisadorJavaCC.getNextToken();
+        }
     }
 
     /**
@@ -24,8 +46,8 @@ public class Sint extends Lex {
     public boolean parse() {
         try {
             analisadorJavaCC.programa();
-            if (analisadorJavaCC.syntaxErrors > 0) {
-                System.out.println("Análise concluída, porém com " + analisadorJavaCC.syntaxErrors + " erro(s) sintático(s) estrutural(is).");
+            if (this.errosSint > 0) {
+                System.out.println("Análise concluída, porém com " + this.errosSint + " erro(s) sintático(s) estrutural(is).");
                 return false;
             }
             return true;

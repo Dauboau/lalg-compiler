@@ -2,29 +2,7 @@
 package g5;
 
 public class LALG implements LALGConstants {
-    // Conta os erros sintáticos encontrados
-    int syntaxErrors = 0;
-
-    // Método para recuperação de erro (Panic Mode)
-    void panicMode(ParseException e, int[] syncTokens) {
-        syntaxErrors++;
-        System.err.println("Erro sint\u00e1tico detectado: " + e.getMessage());
-
-        Token t = getToken(1);
-        boolean sync = false;
-
-        // Pula os tokens até encontrar um token de sincronização (ex: PONTO E VÍRGULA, END, etc)
-        while (t.kind != EOF) {
-            for (int syncToken : syncTokens) {
-                if (t.kind == syncToken) {
-                    sync = true;
-                    break;
-                }
-            }
-            if (sync) break;
-            t = getNextToken();
-        }
-    }
+  public Sint sint;
 
 /* ========================================================= */
 /*                   REGRAS SINTÁTICAS                       */
@@ -303,8 +281,9 @@ public class LALG implements LALGConstants {
         }
       }
     } catch (ParseException e) {
-        // Modo Pânico: consome tokens até achar um fim possível de comando
-        panicMode(e, new int[]{ SIMB_PONTO_VIRGULA, SIMB_FIM });
+        if (sint != null) {
+          sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA, SIMB_FIM });
+        }
     }
   }
 
