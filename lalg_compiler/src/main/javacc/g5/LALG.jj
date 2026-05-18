@@ -93,61 +93,111 @@ TOKEN :
 
 void programa() : {}
 {
-    <SIMB_PROGRAM> <ID> <SIMB_PONTO_VIRGULA>
-    corpo()
-    <SIMB_PONTO>
+    try {
+        <SIMB_PROGRAM> <ID> <SIMB_PONTO_VIRGULA>
+        corpo()
+        <SIMB_PONTO>
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ EOF });
+    }
     <EOF>
 }
 
 void corpo() : {}
 {
-    dc()
-    <SIMB_INICIAR> comandos() <SIMB_FIM>
+    try {
+        dc()
+        <SIMB_INICIAR> comandos() <SIMB_FIM>
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PONTO, EOF });
+    }
 }
 
 void dc() : {}
 {
-    dc_c() dc_v() dc_p()
+    try {
+        dc_c() dc_v() dc_p()
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_INICIAR });
+    }
 }
 
 void dc_c() : {}
 {
-    ( <SIMB_CONST> <ID> <SIMB_IGUAL> numero() <SIMB_PONTO_VIRGULA> )*
+    ( 
+        try {
+            <SIMB_CONST> <ID> <SIMB_IGUAL> numero() <SIMB_PONTO_VIRGULA>
+        } catch (ParseException e) {
+            if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA, SIMB_VAR, SIMB_PROCEDIMENTO, SIMB_INICIAR });
+        }
+    )*
 }
 
 void dc_v() : {}
 {
-    ( <SIMB_VAR> variaveis() <SIMB_DOIS_PONTOS> tipo_var() <SIMB_PONTO_VIRGULA> )*
+    ( 
+        try {
+            <SIMB_VAR> variaveis() <SIMB_DOIS_PONTOS> tipo_var() <SIMB_PONTO_VIRGULA>
+        } catch (ParseException e) {
+            if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA, SIMB_PROCEDIMENTO, SIMB_INICIAR });
+        }
+    )*
 }
 
 void tipo_var() : {}
 {
-    <SIMB_TIPO_REAL> | <SIMB_TIPO_INTEIRO>
+    try {
+        <SIMB_TIPO_REAL> | <SIMB_TIPO_INTEIRO>
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA, SIMB_FECHA_PARENTESES });
+    }
 }
 
 void variaveis() : {}
 {
-    <ID> ( <SIMB_VIRGULA> <ID> )*
+    try {
+        <ID> ( <SIMB_VIRGULA> <ID> )*
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_DOIS_PONTOS, SIMB_FECHA_PARENTESES, SIMB_PONTO_VIRGULA });
+    }
 }
 
 void dc_p() : {}
 {
-    ( <SIMB_PROCEDIMENTO> <ID> parametros() <SIMB_PONTO_VIRGULA> corpo_p() )*
+    (
+        try {
+            <SIMB_PROCEDIMENTO> <ID> parametros() <SIMB_PONTO_VIRGULA> corpo_p()
+        } catch (ParseException e) {
+            if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PROCEDIMENTO, SIMB_INICIAR });
+        }
+    )*
 }
 
 void parametros() : {}
 {
-    ( <SIMB_ABRE_PARENTESES> lista_par() <SIMB_FECHA_PARENTESES> )?
+    try {
+        ( <SIMB_ABRE_PARENTESES> lista_par() <SIMB_FECHA_PARENTESES> )?
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA });
+    }
 }
 
 void lista_par() : {}
 {
-    variaveis() <SIMB_DOIS_PONTOS> tipo_var() ( <SIMB_PONTO_VIRGULA> variaveis() <SIMB_DOIS_PONTOS> tipo_var() )*
+    try {
+        variaveis() <SIMB_DOIS_PONTOS> tipo_var() ( <SIMB_PONTO_VIRGULA> variaveis() <SIMB_DOIS_PONTOS> tipo_var() )*
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_FECHA_PARENTESES });
+    }
 }
 
 void corpo_p() : {}
 {
-    dc_loc() <SIMB_INICIAR> comandos() <SIMB_FIM> <SIMB_PONTO_VIRGULA>
+    try {
+        dc_loc() <SIMB_INICIAR> comandos() <SIMB_FIM> <SIMB_PONTO_VIRGULA>
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PROCEDIMENTO, SIMB_INICIAR, EOF });
+    }
 }
 
 void dc_loc() : {}
@@ -157,12 +207,20 @@ void dc_loc() : {}
 
 void lista_arg() : {}
 {
-    ( <SIMB_ABRE_PARENTESES> argumentos() <SIMB_FECHA_PARENTESES> )?
+    try {
+        ( <SIMB_ABRE_PARENTESES> argumentos() <SIMB_FECHA_PARENTESES> )?
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA, SIMB_FIM, SIMB_SENAO });
+    }
 }
 
 void argumentos() : {}
 {
-    <ID> ( <SIMB_PONTO_VIRGULA> <ID> )*
+    try {
+        <ID> ( <SIMB_PONTO_VIRGULA> <ID> )*
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_FECHA_PARENTESES });
+    }
 }
 
 void comandos() : {}
@@ -185,19 +243,27 @@ void cmd() : {}
         )
     } catch (ParseException e) {
         if (sint != null) {
-          sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA, SIMB_FIM });
+          sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA, SIMB_FIM, SIMB_SENAO });
         }
     }
 }
 
 void pfalsa() : {}
 {
-    ( <SIMB_SENAO> cmd() )?
+    try {
+        ( <SIMB_SENAO> cmd() )?
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA, SIMB_FIM });
+    }
 }
 
 void condicao() : {}
 {
-    expressao() relacao() expressao()
+    try {
+        expressao() relacao() expressao()
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_FECHA_PARENTESES, SIMB_ENTAO, SIMB_FACA });
+    }
 }
 
 void relacao() : {}
@@ -207,7 +273,11 @@ void relacao() : {}
 
 void expressao() : {}
 {
-    termo() ( op_ad() termo() )*
+    try {
+        termo() ( op_ad() termo() )*
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_FECHA_PARENTESES, SIMB_IGUAL, SIMB_DIFERENTE, SIMB_MAIOR_IGUAL, SIMB_MENOR_IGUAL, SIMB_MAIOR, SIMB_MENOR, SIMB_ENTAO, SIMB_FACA, SIMB_ATE, SIMB_PONTO_VIRGULA });
+    }
 }
 
 void op_ad() : {}
@@ -217,7 +287,11 @@ void op_ad() : {}
 
 void termo() : {}
 {
-    op_un() fator() ( op_mul() fator() )*
+    try {
+        op_un() fator() ( op_mul() fator() )*
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_MAIS, SIMB_MENOS, SIMB_FECHA_PARENTESES, SIMB_IGUAL, SIMB_DIFERENTE, SIMB_MAIOR_IGUAL, SIMB_MENOR_IGUAL, SIMB_MAIOR, SIMB_MENOR, SIMB_ENTAO, SIMB_FACA, SIMB_ATE, SIMB_PONTO_VIRGULA });
+    }
 }
 
 void op_un() : {}
@@ -232,7 +306,11 @@ void op_mul() : {}
 
 void fator() : {}
 {
-    <ID> | numero() | <SIMB_ABRE_PARENTESES> expressao() <SIMB_FECHA_PARENTESES>
+    try {
+        <ID> | numero() | <SIMB_ABRE_PARENTESES> expressao() <SIMB_FECHA_PARENTESES>
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA, SIMB_FECHA_PARENTESES, SIMB_MAIS, SIMB_MENOS, SIMB_ASTERISCO, SIMB_BARRA });
+    }
 }
 
 void numero() : {}

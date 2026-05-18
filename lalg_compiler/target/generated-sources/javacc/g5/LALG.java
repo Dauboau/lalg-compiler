@@ -8,25 +8,37 @@ public class LALG implements LALGConstants {
 /*                   REGRAS SINTÁTICAS                       */
 /* ========================================================= */
   final public void programa() throws ParseException {
-    jj_consume_token(SIMB_PROGRAM);
-    jj_consume_token(ID);
-    jj_consume_token(SIMB_PONTO_VIRGULA);
-    corpo();
-    jj_consume_token(SIMB_PONTO);
+    try {
+      jj_consume_token(SIMB_PROGRAM);
+      jj_consume_token(ID);
+      jj_consume_token(SIMB_PONTO_VIRGULA);
+      corpo();
+      jj_consume_token(SIMB_PONTO);
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ EOF });
+    }
     jj_consume_token(0);
   }
 
   final public void corpo() throws ParseException {
-    dc();
-    jj_consume_token(SIMB_INICIAR);
-    comandos();
-    jj_consume_token(SIMB_FIM);
+    try {
+      dc();
+      jj_consume_token(SIMB_INICIAR);
+      comandos();
+      jj_consume_token(SIMB_FIM);
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PONTO, EOF });
+    }
   }
 
   final public void dc() throws ParseException {
-    dc_c();
-    dc_v();
-    dc_p();
+    try {
+      dc_c();
+      dc_v();
+      dc_p();
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_INICIAR });
+    }
   }
 
   final public void dc_c() throws ParseException {
@@ -40,11 +52,15 @@ public class LALG implements LALGConstants {
         jj_la1[0] = jj_gen;
         break label_1;
       }
-      jj_consume_token(SIMB_CONST);
-      jj_consume_token(ID);
-      jj_consume_token(SIMB_IGUAL);
-      numero();
-      jj_consume_token(SIMB_PONTO_VIRGULA);
+      try {
+        jj_consume_token(SIMB_CONST);
+        jj_consume_token(ID);
+        jj_consume_token(SIMB_IGUAL);
+        numero();
+        jj_consume_token(SIMB_PONTO_VIRGULA);
+      } catch (ParseException e) {
+            if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA, SIMB_VAR, SIMB_PROCEDIMENTO, SIMB_INICIAR });
+      }
     }
   }
 
@@ -59,43 +75,55 @@ public class LALG implements LALGConstants {
         jj_la1[1] = jj_gen;
         break label_2;
       }
-      jj_consume_token(SIMB_VAR);
-      variaveis();
-      jj_consume_token(SIMB_DOIS_PONTOS);
-      tipo_var();
-      jj_consume_token(SIMB_PONTO_VIRGULA);
+      try {
+        jj_consume_token(SIMB_VAR);
+        variaveis();
+        jj_consume_token(SIMB_DOIS_PONTOS);
+        tipo_var();
+        jj_consume_token(SIMB_PONTO_VIRGULA);
+      } catch (ParseException e) {
+            if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA, SIMB_PROCEDIMENTO, SIMB_INICIAR });
+      }
     }
   }
 
   final public void tipo_var() throws ParseException {
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case SIMB_TIPO_REAL:
-      jj_consume_token(SIMB_TIPO_REAL);
-      break;
-    case SIMB_TIPO_INTEIRO:
-      jj_consume_token(SIMB_TIPO_INTEIRO);
-      break;
-    default:
-      jj_la1[2] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
+    try {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case SIMB_TIPO_REAL:
+        jj_consume_token(SIMB_TIPO_REAL);
+        break;
+      case SIMB_TIPO_INTEIRO:
+        jj_consume_token(SIMB_TIPO_INTEIRO);
+        break;
+      default:
+        jj_la1[2] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA, SIMB_FECHA_PARENTESES });
     }
   }
 
   final public void variaveis() throws ParseException {
-    jj_consume_token(ID);
-    label_3:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case SIMB_VIRGULA:
-        ;
-        break;
-      default:
-        jj_la1[3] = jj_gen;
-        break label_3;
-      }
-      jj_consume_token(SIMB_VIRGULA);
+    try {
       jj_consume_token(ID);
+      label_3:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case SIMB_VIRGULA:
+          ;
+          break;
+        default:
+          jj_la1[3] = jj_gen;
+          break label_3;
+        }
+        jj_consume_token(SIMB_VIRGULA);
+        jj_consume_token(ID);
+      }
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_DOIS_PONTOS, SIMB_FECHA_PARENTESES, SIMB_PONTO_VIRGULA });
     }
   }
 
@@ -110,54 +138,70 @@ public class LALG implements LALGConstants {
         jj_la1[4] = jj_gen;
         break label_4;
       }
-      jj_consume_token(SIMB_PROCEDIMENTO);
-      jj_consume_token(ID);
-      parametros();
-      jj_consume_token(SIMB_PONTO_VIRGULA);
-      corpo_p();
+      try {
+        jj_consume_token(SIMB_PROCEDIMENTO);
+        jj_consume_token(ID);
+        parametros();
+        jj_consume_token(SIMB_PONTO_VIRGULA);
+        corpo_p();
+      } catch (ParseException e) {
+            if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PROCEDIMENTO, SIMB_INICIAR });
+      }
     }
   }
 
   final public void parametros() throws ParseException {
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case SIMB_ABRE_PARENTESES:
-      jj_consume_token(SIMB_ABRE_PARENTESES);
-      lista_par();
-      jj_consume_token(SIMB_FECHA_PARENTESES);
-      break;
-    default:
-      jj_la1[5] = jj_gen;
-      ;
+    try {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case SIMB_ABRE_PARENTESES:
+        jj_consume_token(SIMB_ABRE_PARENTESES);
+        lista_par();
+        jj_consume_token(SIMB_FECHA_PARENTESES);
+        break;
+      default:
+        jj_la1[5] = jj_gen;
+        ;
+      }
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA });
     }
   }
 
   final public void lista_par() throws ParseException {
-    variaveis();
-    jj_consume_token(SIMB_DOIS_PONTOS);
-    tipo_var();
-    label_5:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case SIMB_PONTO_VIRGULA:
-        ;
-        break;
-      default:
-        jj_la1[6] = jj_gen;
-        break label_5;
-      }
-      jj_consume_token(SIMB_PONTO_VIRGULA);
+    try {
       variaveis();
       jj_consume_token(SIMB_DOIS_PONTOS);
       tipo_var();
+      label_5:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case SIMB_PONTO_VIRGULA:
+          ;
+          break;
+        default:
+          jj_la1[6] = jj_gen;
+          break label_5;
+        }
+        jj_consume_token(SIMB_PONTO_VIRGULA);
+        variaveis();
+        jj_consume_token(SIMB_DOIS_PONTOS);
+        tipo_var();
+      }
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_FECHA_PARENTESES });
     }
   }
 
   final public void corpo_p() throws ParseException {
-    dc_loc();
-    jj_consume_token(SIMB_INICIAR);
-    comandos();
-    jj_consume_token(SIMB_FIM);
-    jj_consume_token(SIMB_PONTO_VIRGULA);
+    try {
+      dc_loc();
+      jj_consume_token(SIMB_INICIAR);
+      comandos();
+      jj_consume_token(SIMB_FIM);
+      jj_consume_token(SIMB_PONTO_VIRGULA);
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PROCEDIMENTO, SIMB_INICIAR, EOF });
+    }
   }
 
   final public void dc_loc() throws ParseException {
@@ -165,32 +209,40 @@ public class LALG implements LALGConstants {
   }
 
   final public void lista_arg() throws ParseException {
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case SIMB_ABRE_PARENTESES:
-      jj_consume_token(SIMB_ABRE_PARENTESES);
-      argumentos();
-      jj_consume_token(SIMB_FECHA_PARENTESES);
-      break;
-    default:
-      jj_la1[7] = jj_gen;
-      ;
+    try {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case SIMB_ABRE_PARENTESES:
+        jj_consume_token(SIMB_ABRE_PARENTESES);
+        argumentos();
+        jj_consume_token(SIMB_FECHA_PARENTESES);
+        break;
+      default:
+        jj_la1[7] = jj_gen;
+        ;
+      }
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA, SIMB_FIM, SIMB_SENAO });
     }
   }
 
   final public void argumentos() throws ParseException {
-    jj_consume_token(ID);
-    label_6:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case SIMB_PONTO_VIRGULA:
-        ;
-        break;
-      default:
-        jj_la1[8] = jj_gen;
-        break label_6;
-      }
-      jj_consume_token(SIMB_PONTO_VIRGULA);
+    try {
       jj_consume_token(ID);
+      label_6:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case SIMB_PONTO_VIRGULA:
+          ;
+          break;
+        default:
+          jj_la1[8] = jj_gen;
+          break label_6;
+        }
+        jj_consume_token(SIMB_PONTO_VIRGULA);
+        jj_consume_token(ID);
+      }
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_FECHA_PARENTESES });
     }
   }
 
@@ -282,27 +334,35 @@ public class LALG implements LALGConstants {
       }
     } catch (ParseException e) {
         if (sint != null) {
-          sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA, SIMB_FIM });
+          sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA, SIMB_FIM, SIMB_SENAO });
         }
     }
   }
 
   final public void pfalsa() throws ParseException {
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case SIMB_SENAO:
-      jj_consume_token(SIMB_SENAO);
-      cmd();
-      break;
-    default:
-      jj_la1[12] = jj_gen;
-      ;
+    try {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case SIMB_SENAO:
+        jj_consume_token(SIMB_SENAO);
+        cmd();
+        break;
+      default:
+        jj_la1[12] = jj_gen;
+        ;
+      }
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA, SIMB_FIM });
     }
   }
 
   final public void condicao() throws ParseException {
-    expressao();
-    relacao();
-    expressao();
+    try {
+      expressao();
+      relacao();
+      expressao();
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_FECHA_PARENTESES, SIMB_ENTAO, SIMB_FACA });
+    }
   }
 
   final public void relacao() throws ParseException {
@@ -333,20 +393,24 @@ public class LALG implements LALGConstants {
   }
 
   final public void expressao() throws ParseException {
-    termo();
-    label_8:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case SIMB_MAIS:
-      case SIMB_MENOS:
-        ;
-        break;
-      default:
-        jj_la1[14] = jj_gen;
-        break label_8;
-      }
-      op_ad();
+    try {
       termo();
+      label_8:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case SIMB_MAIS:
+        case SIMB_MENOS:
+          ;
+          break;
+        default:
+          jj_la1[14] = jj_gen;
+          break label_8;
+        }
+        op_ad();
+        termo();
+      }
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_FECHA_PARENTESES, SIMB_IGUAL, SIMB_DIFERENTE, SIMB_MAIOR_IGUAL, SIMB_MENOR_IGUAL, SIMB_MAIOR, SIMB_MENOR, SIMB_ENTAO, SIMB_FACA, SIMB_ATE, SIMB_PONTO_VIRGULA });
     }
   }
 
@@ -366,21 +430,25 @@ public class LALG implements LALGConstants {
   }
 
   final public void termo() throws ParseException {
-    op_un();
-    fator();
-    label_9:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case SIMB_ASTERISCO:
-      case SIMB_BARRA:
-        ;
-        break;
-      default:
-        jj_la1[16] = jj_gen;
-        break label_9;
-      }
-      op_mul();
+    try {
+      op_un();
       fator();
+      label_9:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case SIMB_ASTERISCO:
+        case SIMB_BARRA:
+          ;
+          break;
+        default:
+          jj_la1[16] = jj_gen;
+          break label_9;
+        }
+        op_mul();
+        fator();
+      }
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_MAIS, SIMB_MENOS, SIMB_FECHA_PARENTESES, SIMB_IGUAL, SIMB_DIFERENTE, SIMB_MAIOR_IGUAL, SIMB_MENOR_IGUAL, SIMB_MAIOR, SIMB_MENOR, SIMB_ENTAO, SIMB_FACA, SIMB_ATE, SIMB_PONTO_VIRGULA });
     }
   }
 
@@ -423,23 +491,27 @@ public class LALG implements LALGConstants {
   }
 
   final public void fator() throws ParseException {
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case ID:
-      jj_consume_token(ID);
-      break;
-    case NUMERO_REAL:
-    case NUMERO_INTEIRO:
-      numero();
-      break;
-    case SIMB_ABRE_PARENTESES:
-      jj_consume_token(SIMB_ABRE_PARENTESES);
-      expressao();
-      jj_consume_token(SIMB_FECHA_PARENTESES);
-      break;
-    default:
-      jj_la1[20] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
+    try {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case ID:
+        jj_consume_token(ID);
+        break;
+      case NUMERO_REAL:
+      case NUMERO_INTEIRO:
+        numero();
+        break;
+      case SIMB_ABRE_PARENTESES:
+        jj_consume_token(SIMB_ABRE_PARENTESES);
+        expressao();
+        jj_consume_token(SIMB_FECHA_PARENTESES);
+        break;
+      default:
+        jj_la1[20] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    } catch (ParseException e) {
+        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA, SIMB_FECHA_PARENTESES, SIMB_MAIS, SIMB_MENOS, SIMB_ASTERISCO, SIMB_BARRA });
     }
   }
 

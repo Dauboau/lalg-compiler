@@ -7,7 +7,7 @@ import java.io.FileInputStream;
  */
 public class Sint extends Lex {
 
-    public int errosSint = 0;
+    protected int errosSint = 0;
 
     /**
      * Construtor do Sint, 
@@ -21,6 +21,11 @@ public class Sint extends Lex {
         analisadorJavaCC.sint = this;
     }
 
+    /**
+     * Implementação do modo pânico para recuperação de erros sintáticos.
+     * @param e A exceção ParseException que foi lançada ao detectar um erro sintático.
+     * @param syncTokens Um array de códigos de tokens que servem como pontos de sincronização para retomar a análise após um erro.
+     */
     public void modoPanico(ParseException e, int[] syncTokens) {
         errosSint++;
         System.err.println("Erro sintático detectado: " + e.getMessage());
