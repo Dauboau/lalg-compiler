@@ -51,7 +51,11 @@ public class Lex {
         return "desconhecido";
     }
 
-    
+    /**
+     * Verifica se um código de token (kind) corresponde a um token de erro,
+     * @param kind O código inteiro do token a ser verificado.
+     * @return true se o token for um token de erro, ou false caso contrário.
+     */
     public static boolean isTokenError(int kind) {
         String tokenName = getTokenName(kind);
         if (tokenName.startsWith("erro_")) {
