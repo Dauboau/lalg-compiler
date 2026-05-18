@@ -26,6 +26,14 @@ public class Lex {
         analisadorJavaCC = new LALG(fis);
     }
 
+    /**
+     * Construtor do Lex,
+     * recebe um FileInputStream
+     * para inicializar o analisador léxico
+     * gerado pelo JavaCC (LALG) e um PrintWriter para saída.
+     * @param fis O FileInputStream do arquivo fonte a ser analisado.
+     * @param writer O PrintWriter para escrever a saída.
+     */
     public Lex(FileInputStream fis, PrintWriter writer) {
         analisadorJavaCC = new LALG(fis);
         this.writer = writer;

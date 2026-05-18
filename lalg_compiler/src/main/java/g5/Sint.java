@@ -23,6 +23,14 @@ public class Sint extends Lex {
         analisadorJavaCC.sint = this;
     }
 
+    /**
+     * Construtor do Sint,
+     * recebe um FileInputStream
+     * para inicializar o analisador sintático
+     * gerado pelo JavaCC (LALG) e um PrintWriter para saída.
+     * @param fis O FileInputStream do arquivo fonte a ser analisado.
+     * @param writer O PrintWriter para escrever a saída.
+     */
     public Sint(FileInputStream fis, PrintWriter writer) {
         super(fis, writer);
         analisadorJavaCC.sint = this;
