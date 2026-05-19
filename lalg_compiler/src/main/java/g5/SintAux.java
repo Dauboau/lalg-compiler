@@ -6,7 +6,6 @@ import java.util.Set;
 
 /**
  * Classe auxiliar contendo os conjuntos FIRST (Primeiro) e FOLLOW (Seguidor)
- * para ajudar no tratamento de erros com o Modo Pânico.
  */
 public class SintAux {
 
