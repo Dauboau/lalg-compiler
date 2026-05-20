@@ -347,6 +347,14 @@ void lista_par(Set<Integer> followPai) : {
         sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("tipo_var"), sync));
     }
     tipo_var(sync) 
+    mais_par(sync)
+}
+
+void mais_par(Set<Integer> followPai) : { 
+    Set<Integer> followMaisPar = SintAux.FOLLOW.get("mais_par");
+    Set<Integer> sync = SintAux.unir(followMaisPar, followPai); 
+}
+{
     ( 
         try {
             <SIMB_PONTO_VIRGULA> 
@@ -434,6 +442,14 @@ void argumentos(Set<Integer> followPai) : {
         Set<Integer> syncVirgula = SintAux.unir(SintAux.FIRST.get("mais_ident"), sync);
         sint.modoPanico(e, syncVirgula);
     }
+    mais_ident(sync)
+}
+
+void mais_ident(Set<Integer> followPai) : { 
+    Set<Integer> followMaisIdent = SintAux.FOLLOW.get("mais_ident");
+    Set<Integer> sync = SintAux.unir(followMaisIdent, followPai); 
+}
+{
     ( 
         try {
             <SIMB_PONTO_VIRGULA> 
@@ -626,7 +642,15 @@ void expressao(Set<Integer> followPai) : {
     Set<Integer> sync = SintAux.unir(followExpressao, followPai); 
 }
 {
-    termo(sync) ( op_ad(sync) termo(sync) )*
+    termo(sync) outros_termos(sync)
+}
+
+void outros_termos(Set<Integer> followPai) : { 
+    Set<Integer> followOutrosTermos = SintAux.FOLLOW.get("outros_termos");
+    Set<Integer> sync = SintAux.unir(followOutrosTermos, followPai); 
+}
+{
+    ( op_ad(sync) termo(sync) )*
 }
 
 void op_ad(Set<Integer> followPai) : { 
@@ -647,7 +671,15 @@ void termo(Set<Integer> followPai) : {
     Set<Integer> sync = SintAux.unir(followTermo, followPai); 
 }
 {
-    op_un(sync) fator(sync) ( op_mul(sync) fator(sync) )*
+    op_un(sync) fator(sync) mais_fatores(sync)
+}
+
+void mais_fatores(Set<Integer> followPai) : { 
+    Set<Integer> followMaisFatores = SintAux.FOLLOW.get("mais_fatores");
+    Set<Integer> sync = SintAux.unir(followMaisFatores, followPai); 
+}
+{
+    ( op_mul(sync) fator(sync) )*
 }
 
 void op_un(Set<Integer> followPai) : { 

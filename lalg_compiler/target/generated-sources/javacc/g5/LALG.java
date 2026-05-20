@@ -287,6 +287,12 @@ public class LALG implements LALGConstants {
         sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("tipo_var"), sync));
     }
     tipo_var(sync);
+    mais_par(sync);
+  }
+
+  final public void mais_par(Set<Integer> followPai) throws ParseException {
+    Set<Integer> followMaisPar = SintAux.FOLLOW.get("mais_par");
+    Set<Integer> sync = SintAux.unir(followMaisPar, followPai);
     label_5:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -381,6 +387,12 @@ public class LALG implements LALGConstants {
         Set<Integer> syncVirgula = SintAux.unir(SintAux.FIRST.get("mais_ident"), sync);
         sint.modoPanico(e, syncVirgula);
     }
+    mais_ident(sync);
+  }
+
+  final public void mais_ident(Set<Integer> followPai) throws ParseException {
+    Set<Integer> followMaisIdent = SintAux.FOLLOW.get("mais_ident");
+    Set<Integer> sync = SintAux.unir(followMaisIdent, followPai);
     label_6:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -685,6 +697,12 @@ public class LALG implements LALGConstants {
     Set<Integer> followExpressao = SintAux.FOLLOW.get("expressao");
     Set<Integer> sync = SintAux.unir(followExpressao, followPai);
     termo(sync);
+    outros_termos(sync);
+  }
+
+  final public void outros_termos(Set<Integer> followPai) throws ParseException {
+    Set<Integer> followOutrosTermos = SintAux.FOLLOW.get("outros_termos");
+    Set<Integer> sync = SintAux.unir(followOutrosTermos, followPai);
     label_8:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -728,6 +746,12 @@ public class LALG implements LALGConstants {
     Set<Integer> sync = SintAux.unir(followTermo, followPai);
     op_un(sync);
     fator(sync);
+    mais_fatores(sync);
+  }
+
+  final public void mais_fatores(Set<Integer> followPai) throws ParseException {
+    Set<Integer> followMaisFatores = SintAux.FOLLOW.get("mais_fatores");
+    Set<Integer> sync = SintAux.unir(followMaisFatores, followPai);
     label_9:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -863,6 +887,23 @@ public class LALG implements LALGConstants {
     finally { jj_save(0, xla); }
   }
 
+  private boolean jj_3R_14() {
+    if (jj_scan_token(SIMB_ABRE_PARENTESES)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_12() {
+    if (jj_3R_13()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_13() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_14()) jj_scanpos = xsp;
+    return false;
+  }
+
   private boolean jj_3R_11() {
     if (jj_scan_token(SIMB_ATRIBUICAO)) return true;
     return false;
@@ -881,23 +922,6 @@ public class LALG implements LALGConstants {
   private boolean jj_3_1() {
     if (jj_scan_token(ID)) return true;
     if (jj_3R_10()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_13() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_14()) jj_scanpos = xsp;
-    return false;
-  }
-
-  private boolean jj_3R_12() {
-    if (jj_3R_13()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_14() {
-    if (jj_scan_token(SIMB_ABRE_PARENTESES)) return true;
     return false;
   }
 
