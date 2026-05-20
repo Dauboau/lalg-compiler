@@ -181,6 +181,12 @@ public class LALG implements LALGConstants {
         Set<Integer> syncVirgula = SintAux.unir(SintAux.FIRST.get("mais_var"), sync);
         sint.modoPanico(e, syncVirgula);
     }
+    mais_var(sync);
+  }
+
+  final public void mais_var(Set<Integer> followPai) throws ParseException {
+    Set<Integer> followMaisVar = SintAux.FOLLOW.get("mais_var");
+    Set<Integer> sync = SintAux.unir(followMaisVar, followPai);
     label_3:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -194,13 +200,13 @@ public class LALG implements LALGConstants {
       try {
         jj_consume_token(SIMB_VIRGULA);
       } catch (ParseException e) {
-            // Próximo símbolo é o ID. Para ser fiel à gramática, recorremos à repetição de variaveis
-            sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("variaveis"), sync));
+            // Próximo símbolo é o ID (que é também FIRST de variaveis)
+            sint.modoPanico(e, SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.ID)), sync));
       }
       try {
         jj_consume_token(ID);
       } catch (ParseException e) {
-            // Próximo símbolo é mais_var (FIRST = vírgula)
+            // Próximo símbolo é o início do próprio loop (FIRST = vírgula) ou fim da recursão
             Set<Integer> syncVirgula = SintAux.unir(SintAux.FIRST.get("mais_var"), sync);
             sint.modoPanico(e, syncVirgula);
       }

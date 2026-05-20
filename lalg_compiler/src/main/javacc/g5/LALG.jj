@@ -256,17 +256,25 @@ void variaveis(Set<Integer> followPai) : {
         sint.modoPanico(e, syncVirgula);
     }
     
+    mais_var(sync)
+}
+
+void mais_var(Set<Integer> followPai) : { 
+    Set<Integer> followMaisVar = SintAux.FOLLOW.get("mais_var");
+    Set<Integer> sync = SintAux.unir(followMaisVar, followPai); 
+}
+{
     ( 
         try {
             <SIMB_VIRGULA> 
         } catch (ParseException e) {
-            // Próximo símbolo é o ID. Para ser fiel à gramática, recorremos à repetição de variaveis
-            sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("variaveis"), sync));
+            // Próximo símbolo é o ID (que é também FIRST de variaveis)
+            sint.modoPanico(e, SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.ID)), sync));
         }
         try {
             <ID> 
         } catch (ParseException e) {
-            // Próximo símbolo é mais_var (FIRST = vírgula)
+            // Próximo símbolo é o início do próprio loop (FIRST = vírgula) ou fim da recursão
             Set<Integer> syncVirgula = SintAux.unir(SintAux.FIRST.get("mais_var"), sync);
             sint.modoPanico(e, syncVirgula);
         }
