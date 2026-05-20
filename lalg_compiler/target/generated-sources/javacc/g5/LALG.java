@@ -374,36 +374,26 @@ public class LALG implements LALGConstants {
   final public void mais_ident(Set<Integer> followPai) throws ParseException {
     Set<Integer> followMaisIdent = SintAux.FOLLOW.get("mais_ident");
     Set<Integer> sync = SintAux.unir(followMaisIdent, followPai);
-    label_4:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case SIMB_PONTO_VIRGULA:
-        ;
-        break;
-      default:
-        jj_la1[8] = jj_gen;
-        break label_4;
-      }
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case SIMB_PONTO_VIRGULA:
       try {
         jj_consume_token(SIMB_PONTO_VIRGULA);
       } catch (ParseException e) {
             // Próximo símbolo para manter a fidelidade à gramática é argumentos (FIRST = ID)
             sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("argumentos"), sync));
       }
-      try {
-        jj_consume_token(ID);
-      } catch (ParseException e) {
-            // Próximo símbolo vem de mais_ident (FIRST = PONTO_VIRGULA)
-            Set<Integer> syncVirgula = SintAux.unir(SintAux.FIRST.get("mais_ident"), sync);
-            sint.modoPanico(e, syncVirgula);
-      }
+      argumentos(sync);
+      break;
+    default:
+      jj_la1[8] = jj_gen;
+      ;
     }
   }
 
   final public void comandos(Set<Integer> followPai) throws ParseException {
     Set<Integer> followComandos = SintAux.FOLLOW.get("comandos");
     Set<Integer> sync = SintAux.unir(followComandos, followPai);
-    label_5:
+    label_4:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SIMB_INICIAR:
@@ -417,14 +407,14 @@ public class LALG implements LALGConstants {
         break;
       default:
         jj_la1[9] = jj_gen;
-        break label_5;
+        break label_4;
       }
       cmd(sync);
       try {
         jj_consume_token(SIMB_PONTO_VIRGULA);
       } catch (ParseException e) {
-            // Próximo símbolo pode ser inicio de novo comando (FIRST de cmd) ou fim do loop (recorre ao sync)
-            Set<Integer> syncPV = SintAux.unir(SintAux.FIRST.get("cmd"), sync);
+            // Próximo símbolo pode ser inicio de novo comando (FIRST de comandos) ou fim do loop (recorre ao sync)
+            Set<Integer> syncPV = SintAux.unir(SintAux.FIRST.get("comandos"), sync);
             sint.modoPanico(e, syncPV);
       }
     }
@@ -684,7 +674,7 @@ public class LALG implements LALGConstants {
   final public void outros_termos(Set<Integer> followPai) throws ParseException {
     Set<Integer> followOutrosTermos = SintAux.FOLLOW.get("outros_termos");
     Set<Integer> sync = SintAux.unir(followOutrosTermos, followPai);
-    label_6:
+    label_5:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SIMB_MAIS:
@@ -693,7 +683,7 @@ public class LALG implements LALGConstants {
         break;
       default:
         jj_la1[15] = jj_gen;
-        break label_6;
+        break label_5;
       }
       op_ad(sync);
       termo(sync);
@@ -733,7 +723,7 @@ public class LALG implements LALGConstants {
   final public void mais_fatores(Set<Integer> followPai) throws ParseException {
     Set<Integer> followMaisFatores = SintAux.FOLLOW.get("mais_fatores");
     Set<Integer> sync = SintAux.unir(followMaisFatores, followPai);
-    label_7:
+    label_6:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SIMB_ASTERISCO:
@@ -742,7 +732,7 @@ public class LALG implements LALGConstants {
         break;
       default:
         jj_la1[17] = jj_gen;
-        break label_7;
+        break label_6;
       }
       op_mul(sync);
       fator(sync);
@@ -868,41 +858,41 @@ public class LALG implements LALGConstants {
     finally { jj_save(0, xla); }
   }
 
-  private boolean jj_3R_12() {
+  private boolean jj_3R_11() {
     if (jj_scan_token(SIMB_ABRE_PARENTESES)) return true;
     return false;
   }
 
-  private boolean jj_3R_10() {
-    if (jj_3R_11()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_11() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_12()) jj_scanpos = xsp;
-    return false;
-  }
-
-  private boolean jj_3R_9() {
+  private boolean jj_3R_8() {
     if (jj_scan_token(SIMB_ATRIBUICAO)) return true;
     return false;
   }
 
-  private boolean jj_3R_8() {
+  private boolean jj_3R_7() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_9()) {
+    if (jj_3R_8()) {
     jj_scanpos = xsp;
-    if (jj_3R_10()) return true;
+    if (jj_3R_9()) return true;
     }
     return false;
   }
 
   private boolean jj_3_1() {
     if (jj_scan_token(ID)) return true;
-    if (jj_3R_8()) return true;
+    if (jj_3R_7()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_10() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_11()) jj_scanpos = xsp;
+    return false;
+  }
+
+  private boolean jj_3R_9() {
+    if (jj_3R_10()) return true;
     return false;
   }
 

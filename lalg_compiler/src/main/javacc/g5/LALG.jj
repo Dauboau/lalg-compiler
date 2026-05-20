@@ -461,8 +461,8 @@ void comandos(Set<Integer> followPai) : {
         try {
             <SIMB_PONTO_VIRGULA> 
         } catch (ParseException e) {
-            // Próximo símbolo pode ser inicio de novo comando (FIRST de cmd) ou fim do loop (recorre ao sync)
-            Set<Integer> syncPV = SintAux.unir(SintAux.FIRST.get("cmd"), sync);
+            // Próximo símbolo pode ser inicio de novo comando (FIRST de comandos) ou fim do loop (recorre ao sync)
+            Set<Integer> syncPV = SintAux.unir(SintAux.FIRST.get("comandos"), sync);
             sint.modoPanico(e, syncPV);
         }
     )*
