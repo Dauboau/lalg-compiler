@@ -447,14 +447,8 @@ void mais_ident(Set<Integer> followPai) : {
             // Próximo símbolo para manter a fidelidade à gramática é argumentos (FIRST = ID)
             sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("argumentos"), sync));
         }
-        try {
-            <ID> 
-        } catch (ParseException e) {
-            // Próximo símbolo vem de mais_ident (FIRST = PONTO_VIRGULA)
-            Set<Integer> syncVirgula = SintAux.unir(SintAux.FIRST.get("mais_ident"), sync);
-            sint.modoPanico(e, syncVirgula);
-        }
-    )*
+        argumentos(sync)
+    )?
 }
 
 void comandos(Set<Integer> followPai) : { 
