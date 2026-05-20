@@ -1,6 +1,7 @@
 package g5;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,6 +12,20 @@ public class SintAux {
 
     public static final Map<String, Set<Integer>> FIRST = new HashMap<>();
     public static final Map<String, Set<Integer>> FOLLOW = new HashMap<>();
+
+    /**
+     * Função utilitária para unir o conjunto Seguidor da regra atual
+     * com o conjunto Seguidor do pai (followPai).
+     * @param a O conjunto Seguidor da regra atual (SintAux.FOLLOW.get("regra"))
+     * @param b O conjunto contendo os tokens do followPai
+     * @return Um conjunto de inteiros contendo a união dos tokens para sincronização
+     */
+    public static Set<Integer> unir(Set<Integer> a, Set<Integer> b) {
+        Set<Integer> set = new HashSet<>();
+        if (a != null) set.addAll(a);
+        if (b != null) set.addAll(b);
+        return set;
+    }
 
     static {
         // Inicialização do conjunto FIRST (Primeiro)

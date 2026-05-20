@@ -3,6 +3,8 @@ package g5;
 import java.io.FileInputStream;
 import java.io.PrintWriter;
 
+import java.util.Set;
+
 /**
  * Classe SINT, responsável pela Análise Sintática.
  */
@@ -39,9 +41,9 @@ public class Sint extends Lex {
     /**
      * Implementação do modo pânico para recuperação de erros sintáticos.
      * @param e A exceção ParseException que foi lançada ao detectar um erro sintático.
-     * @param syncTokens Um array de códigos de tokens que servem como pontos de sincronização para retomar a análise após um erro.
+     * @param syncTokens Um conjunto de códigos de tokens que servem como pontos de sincronização para retomar a análise após um erro.
      */
-    public void modoPanico(ParseException e, int[] syncTokens) {
+    public void modoPanico(ParseException e, Set<Integer> syncTokens) {
 
         Token t = analisadorJavaCC.getToken(1);
         
@@ -59,13 +61,10 @@ public class Sint extends Lex {
         boolean sync = false;
         
         while (t.kind != LALGConstants.EOF) {
-            for (int syncToken : syncTokens) {
-                if (t.kind == syncToken) {
-                    sync = true;
-                    break;
-                }
+            if (syncTokens.contains(t.kind)) {
+                sync = true;
+                break;
             }
-            if (sync) break;
             t = analisadorJavaCC.getNextToken();
         }
     }

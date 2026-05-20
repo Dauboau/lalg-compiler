@@ -6,6 +6,10 @@ PARSER_BEGIN(LALG)
 
 package g5;
 
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Arrays;
+
 public class LALG {
   public Sint sint;
 }
@@ -91,229 +95,503 @@ TOKEN :
 /*                   REGRAS SINTÁTICAS                       */
 /* ========================================================= */
 
-void programa() : {}
+void programa(): { 
+    Set<Integer> followPrograma = SintAux.FOLLOW.get("programa"); 
+}
 {
     try {
-        <SIMB_PROGRAM> <ID> <SIMB_PONTO_VIRGULA>
-        corpo()
+        <SIMB_PROGRAM> 
+    } catch (ParseException e) {
+        // Próximo símbolo é o ID
+        sint.modoPanico(e, SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.ID)), followPrograma));
+    }
+    
+    try {
+        <ID> 
+    } catch (ParseException e) {
+        // Próximo símbolo é o ;
+        sint.modoPanico(e, SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_PONTO_VIRGULA)), followPrograma));
+    }
+    
+    try {
+        <SIMB_PONTO_VIRGULA>
+    } catch (ParseException e) {
+        // Próximo símbolo é o corpo() -> FIRST do corpo()
+        sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("corpo"), followPrograma));
+    }
+    
+    corpo(followPrograma)
+    
+    try {
         <SIMB_PONTO>
     } catch (ParseException e) {
-        if (sint != null) sint.modoPanico(e, new int[]{ EOF });
+        // Próximo é o EOF
+        sint.modoPanico(e, followPrograma);
     }
     <EOF>
 }
 
-void corpo() : {}
+void corpo(Set<Integer> followPai) : { 
+    Set<Integer> followCorpo = SintAux.FOLLOW.get("corpo");
+    Set<Integer> sync = SintAux.unir(followCorpo, followPai); 
+}
 {
+    dc(sync)
+    
     try {
-        dc()
-        <SIMB_INICIAR> comandos() <SIMB_FIM>
+        <SIMB_INICIAR> 
     } catch (ParseException e) {
-        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PONTO, EOF });
+        // Próximo símbolo pode vir de comandos (FIRST), mas como pode ser λ (vazio), incluímos também o SIMB_FIM
+        Set<Integer> syncIniciar = SintAux.unir(SintAux.FIRST.get("comandos"), sync);
+        syncIniciar.add(LALGConstants.SIMB_FIM);
+        sint.modoPanico(e, syncIniciar);
+    }
+    
+    comandos(sync) 
+    
+    try {
+        <SIMB_FIM>
+    } catch (ParseException e) {
+        // Como é o último elemento, a sincronização recorre apenas ao sync (FOLLOW da regra + followPai)
+        sint.modoPanico(e, sync);
     }
 }
 
-void dc() : {}
+void dc(Set<Integer> followPai) : { 
+    Set<Integer> followDc = SintAux.FOLLOW.get("dc");
+    Set<Integer> sync = SintAux.unir(followDc, followPai); 
+}
 {
-    try {
-        dc_c() dc_v() dc_p()
-    } catch (ParseException e) {
-        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_INICIAR });
-    }
+    dc_c(sync) dc_v(sync) dc_p(sync)
 }
 
-void dc_c() : {}
+void dc_c(Set<Integer> followPai) : { 
+    Set<Integer> followDcC = SintAux.FOLLOW.get("dc_c");
+    Set<Integer> sync = SintAux.unir(followDcC, followPai); 
+}
 {
     ( 
         try {
-            <SIMB_CONST> <ID> <SIMB_IGUAL> numero() <SIMB_PONTO_VIRGULA>
+            <SIMB_CONST> 
         } catch (ParseException e) {
-            if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA, SIMB_VAR, SIMB_PROCEDIMENTO, SIMB_INICIAR });
+            sint.modoPanico(e, SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.ID)), sync));
+        }
+        try {
+            <ID> 
+        } catch (ParseException e) {
+            sint.modoPanico(e, SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_IGUAL)), sync));
+        }
+        try {
+            <SIMB_IGUAL> 
+        } catch (ParseException e) {
+            sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("numero"), sync));
+        }
+        numero(sync) 
+        try {
+            <SIMB_PONTO_VIRGULA>
+        } catch (ParseException e) {
+            Set<Integer> syncPV = SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_CONST)), sync);
+            sint.modoPanico(e, syncPV);
         }
     )*
 }
 
-void dc_v() : {}
+void dc_v(Set<Integer> followPai) : { 
+    Set<Integer> followDcV = SintAux.FOLLOW.get("dc_v");
+    Set<Integer> sync = SintAux.unir(followDcV, followPai); 
+}
 {
     ( 
         try {
-            <SIMB_VAR> variaveis() <SIMB_DOIS_PONTOS> tipo_var() <SIMB_PONTO_VIRGULA>
+            <SIMB_VAR> 
         } catch (ParseException e) {
-            if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA, SIMB_PROCEDIMENTO, SIMB_INICIAR });
+            sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("variaveis"), sync));
+        }
+        variaveis(sync) 
+        try {
+            <SIMB_DOIS_PONTOS> 
+        } catch (ParseException e) {
+            sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("tipo_var"), sync));
+        }
+        tipo_var(sync) 
+        try {
+            <SIMB_PONTO_VIRGULA>
+        } catch (ParseException e) {
+            Set<Integer> syncPV = SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_VAR)), sync);
+            sint.modoPanico(e, syncPV);
         }
     )*
 }
 
-void tipo_var() : {}
+void tipo_var(Set<Integer> followPai) : { 
+    Set<Integer> followTipoVar = SintAux.FOLLOW.get("tipo_var");
+    Set<Integer> sync = SintAux.unir(followTipoVar, followPai); 
+}
 {
     try {
         <SIMB_TIPO_REAL> | <SIMB_TIPO_INTEIRO>
     } catch (ParseException e) {
-        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA, SIMB_FECHA_PARENTESES });
+        sint.modoPanico(e, sync);
     }
 }
 
-void variaveis() : {}
+void variaveis(Set<Integer> followPai) : { 
+    Set<Integer> followVariaveis = SintAux.FOLLOW.get("variaveis");
+    Set<Integer> sync = SintAux.unir(followVariaveis, followPai); 
+}
 {
     try {
-        <ID> ( <SIMB_VIRGULA> <ID> )*
+        <ID> 
     } catch (ParseException e) {
-        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_DOIS_PONTOS, SIMB_FECHA_PARENTESES, SIMB_PONTO_VIRGULA });
+        Set<Integer> syncVirgula = SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_VIRGULA)), sync);
+        sint.modoPanico(e, syncVirgula);
     }
-}
-
-void dc_p() : {}
-{
-    (
+    
+    ( 
         try {
-            <SIMB_PROCEDIMENTO> <ID> parametros() <SIMB_PONTO_VIRGULA> corpo_p()
+            <SIMB_VIRGULA> 
         } catch (ParseException e) {
-            if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PROCEDIMENTO, SIMB_INICIAR });
+            sint.modoPanico(e, SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.ID)), sync));
+        }
+        try {
+            <ID> 
+        } catch (ParseException e) {
+            Set<Integer> syncVirgula = SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_VIRGULA)), sync);
+            sint.modoPanico(e, syncVirgula);
         }
     )*
 }
 
-void parametros() : {}
-{
-    try {
-        ( <SIMB_ABRE_PARENTESES> lista_par() <SIMB_FECHA_PARENTESES> )?
-    } catch (ParseException e) {
-        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA });
-    }
+void dc_p(Set<Integer> followPai) : { 
+    Set<Integer> followDcP = SintAux.FOLLOW.get("dc_p");
+    Set<Integer> sync = SintAux.unir(followDcP, followPai); 
 }
-
-void lista_par() : {}
 {
-    try {
-        variaveis() <SIMB_DOIS_PONTOS> tipo_var() ( <SIMB_PONTO_VIRGULA> variaveis() <SIMB_DOIS_PONTOS> tipo_var() )*
-    } catch (ParseException e) {
-        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_FECHA_PARENTESES });
-    }
-}
-
-void corpo_p() : {}
-{
-    try {
-        dc_loc() <SIMB_INICIAR> comandos() <SIMB_FIM> <SIMB_PONTO_VIRGULA>
-    } catch (ParseException e) {
-        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PROCEDIMENTO, SIMB_INICIAR, EOF });
-    }
-}
-
-void dc_loc() : {}
-{
-    dc_v()
-}
-
-void lista_arg() : {}
-{
-    try {
-        ( <SIMB_ABRE_PARENTESES> argumentos() <SIMB_FECHA_PARENTESES> )?
-    } catch (ParseException e) {
-        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA, SIMB_FIM, SIMB_SENAO });
-    }
-}
-
-void argumentos() : {}
-{
-    try {
-        <ID> ( <SIMB_PONTO_VIRGULA> <ID> )*
-    } catch (ParseException e) {
-        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_FECHA_PARENTESES });
-    }
-}
-
-void comandos() : {}
-{
-    ( cmd() <SIMB_PONTO_VIRGULA> )*
-}
-
-void cmd() : {}
-{
-    try {
-        (
-            <SIMB_LEIA> <SIMB_ABRE_PARENTESES> variaveis() <SIMB_FECHA_PARENTESES>
-          | <SIMB_ESCREVA> <SIMB_ABRE_PARENTESES> variaveis() <SIMB_FECHA_PARENTESES>
-          | <SIMB_ENQUANTO> <SIMB_ABRE_PARENTESES> condicao() <SIMB_FECHA_PARENTESES> <SIMB_FACA> cmd()
-          | <SIMB_SE> condicao() <SIMB_ENTAO> cmd() pfalsa()
-          | <SIMB_PARA> <ID> <SIMB_ATRIBUICAO> expressao() <SIMB_ATE> expressao() <SIMB_FACA> cmd()
-          | LOOKAHEAD(2) <ID> <SIMB_ATRIBUICAO> expressao()
-          | <ID> lista_arg()
-          | <SIMB_INICIAR> comandos() <SIMB_FIM>
-        )
-    } catch (ParseException e) {
-        if (sint != null) {
-          sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA, SIMB_FIM, SIMB_SENAO });
+    (
+        try {
+            <SIMB_PROCEDIMENTO> 
+        } catch (ParseException e) {
+            sint.modoPanico(e, SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.ID)), sync));
         }
+        try {
+            <ID> 
+        } catch (ParseException e) {
+            Set<Integer> syncID = SintAux.unir(SintAux.FIRST.get("parametros"), sync);
+            syncID.add(LALGConstants.SIMB_PONTO_VIRGULA);
+            sint.modoPanico(e, syncID);
+        }
+        parametros(sync) 
+        try {
+            <SIMB_PONTO_VIRGULA> 
+        } catch (ParseException e) {
+            sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("corpo_p"), sync));
+        }
+        corpo_p(sync)
+    )*
+}
+
+void parametros(Set<Integer> followPai) : { 
+    Set<Integer> followParametros = SintAux.FOLLOW.get("parametros");
+    Set<Integer> sync = SintAux.unir(followParametros, followPai); 
+}
+{
+    ( 
+        try {
+            <SIMB_ABRE_PARENTESES> 
+        } catch (ParseException e) {
+            sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("lista_par"), sync));
+        }
+        lista_par(sync) 
+        try {
+            <SIMB_FECHA_PARENTESES> 
+        } catch (ParseException e) {
+            sint.modoPanico(e, sync);
+        }
+    )?
+}
+
+void lista_par(Set<Integer> followPai) : { 
+    Set<Integer> followListaPar = SintAux.FOLLOW.get("lista_par");
+    Set<Integer> sync = SintAux.unir(followListaPar, followPai); 
+}
+{
+    variaveis(sync) 
+    try {
+        <SIMB_DOIS_PONTOS> 
+    } catch (ParseException e) {
+        sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("tipo_var"), sync));
+    }
+    tipo_var(sync) 
+    ( 
+        try {
+            <SIMB_PONTO_VIRGULA> 
+        } catch (ParseException e) {
+            sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("variaveis"), sync));
+        }
+        variaveis(sync) 
+        try {
+            <SIMB_DOIS_PONTOS> 
+        } catch (ParseException e) {
+            sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("tipo_var"), sync));
+        }
+        tipo_var(sync) 
+    )*
+}
+
+void corpo_p(Set<Integer> followPai) : { 
+    Set<Integer> followCorpoP = SintAux.FOLLOW.get("corpo_p");
+    Set<Integer> sync = SintAux.unir(followCorpoP, followPai); 
+}
+{
+    dc_loc(sync) 
+    try {
+        <SIMB_INICIAR> 
+    } catch (ParseException e) {
+        Set<Integer> syncIniciar = SintAux.unir(SintAux.FIRST.get("comandos"), sync);
+        syncIniciar.add(LALGConstants.SIMB_FIM);
+        sint.modoPanico(e, syncIniciar);
+    }
+    comandos(sync) 
+    try {
+        <SIMB_FIM> 
+    } catch (ParseException e) {
+        sint.modoPanico(e, SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_PONTO_VIRGULA)), sync));
+    }
+    try {
+        <SIMB_PONTO_VIRGULA>
+    } catch (ParseException e) {
+        Set<Integer> syncPV = SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_PROCEDIMENTO)), sync);
+        sint.modoPanico(e, syncPV);
     }
 }
 
-void pfalsa() : {}
+void dc_loc(Set<Integer> followPai) : {  }
+{
+    dc_v(SintAux.unir(SintAux.FOLLOW.get("dc_loc"), followPai))
+}
+
+void lista_arg(Set<Integer> followPai) : { 
+    Set<Integer> followListaArg = SintAux.FOLLOW.get("lista_arg");
+    Set<Integer> sync = SintAux.unir(followListaArg, followPai); 
+}
+{
+    ( 
+        try {
+            <SIMB_ABRE_PARENTESES> 
+        } catch (ParseException e) {
+            sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("argumentos"), sync));
+        }
+        argumentos(sync) 
+        try {
+            <SIMB_FECHA_PARENTESES> 
+        } catch (ParseException e) {
+            sint.modoPanico(e, sync);
+        }
+    )?
+}
+
+void argumentos(Set<Integer> followPai) : { 
+    Set<Integer> followArgumentos = SintAux.FOLLOW.get("argumentos");
+    Set<Integer> sync = SintAux.unir(followArgumentos, followPai); 
+}
 {
     try {
-        ( <SIMB_SENAO> cmd() )?
+        <ID> 
     } catch (ParseException e) {
-        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA, SIMB_FIM });
+        Set<Integer> syncVirgula = SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_PONTO_VIRGULA)), sync);
+        sint.modoPanico(e, syncVirgula);
     }
+    ( 
+        try {
+            <SIMB_PONTO_VIRGULA> 
+        } catch (ParseException e) {
+            sint.modoPanico(e, SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.ID)), sync));
+        }
+        try {
+            <ID> 
+        } catch (ParseException e) {
+            Set<Integer> syncVirgula = SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_PONTO_VIRGULA)), sync);
+            sint.modoPanico(e, syncVirgula);
+        }
+    )*
 }
 
-void condicao() : {}
+void comandos(Set<Integer> followPai) : { 
+    Set<Integer> followComandos = SintAux.FOLLOW.get("comandos");
+    Set<Integer> sync = SintAux.unir(followComandos, followPai); 
+}
+{
+    ( 
+        cmd(sync) 
+        try {
+            <SIMB_PONTO_VIRGULA> 
+        } catch (ParseException e) {
+            Set<Integer> syncPV = SintAux.unir(SintAux.FIRST.get("cmd"), sync);
+            sint.modoPanico(e, syncPV);
+        }
+    )*
+}
+
+void cmd(Set<Integer> followPai) : { 
+    Set<Integer> followCmd = SintAux.FOLLOW.get("cmd");
+    Set<Integer> sync = SintAux.unir(followCmd, followPai); 
+}
+{
+    (
+        try { <SIMB_LEIA> } catch (ParseException e) { sint.modoPanico(e, SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_ABRE_PARENTESES)), sync)); }
+        try { <SIMB_ABRE_PARENTESES> } catch (ParseException e) { sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("variaveis"), sync)); }
+        variaveis(sync) 
+        try { <SIMB_FECHA_PARENTESES> } catch (ParseException e) { sint.modoPanico(e, sync); }
+        
+      | try { <SIMB_ESCREVA> } catch (ParseException e) { sint.modoPanico(e, SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_ABRE_PARENTESES)), sync)); }
+        try { <SIMB_ABRE_PARENTESES> } catch (ParseException e) { sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("variaveis"), sync)); }
+        variaveis(sync) 
+        try { <SIMB_FECHA_PARENTESES> } catch (ParseException e) { sint.modoPanico(e, sync); }
+        
+      | try { <SIMB_ENQUANTO> } catch (ParseException e) { sint.modoPanico(e, SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_ABRE_PARENTESES)), sync)); }
+        try { <SIMB_ABRE_PARENTESES> } catch (ParseException e) { sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("condicao"), sync)); }
+        condicao(sync) 
+        try { <SIMB_FECHA_PARENTESES> } catch (ParseException e) { sint.modoPanico(e, SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_FACA)), sync)); }
+        try { <SIMB_FACA> } catch (ParseException e) { sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("cmd"), sync)); }
+        cmd(sync)
+        
+      | try { <SIMB_SE> } catch (ParseException e) { sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("condicao"), sync)); }
+        condicao(sync) 
+        try { <SIMB_ENTAO> } catch (ParseException e) { sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("cmd"), sync)); }
+        cmd(sync) pfalsa(sync)
+        
+      | try { <SIMB_PARA> } catch (ParseException e) { sint.modoPanico(e, SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.ID)), sync)); }
+        try { <ID> } catch (ParseException e) { sint.modoPanico(e, SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_ATRIBUICAO)), sync)); }
+        try { <SIMB_ATRIBUICAO> } catch (ParseException e) { sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("expressao"), sync)); }
+        expressao(sync) 
+        try { <SIMB_ATE> } catch (ParseException e) { sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("expressao"), sync)); }
+        expressao(sync) 
+        try { <SIMB_FACA> } catch (ParseException e) { sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("cmd"), sync)); }
+        cmd(sync)
+        
+      | LOOKAHEAD(2) 
+        try { <ID> } catch (ParseException e) { sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("cmd_aux"), sync)); }
+        cmd_aux(sync)
+        
+      | try { <SIMB_INICIAR> } catch (ParseException e) { 
+            Set<Integer> syncIniciar = SintAux.unir(SintAux.FIRST.get("comandos"), sync);
+            syncIniciar.add(LALGConstants.SIMB_FIM);
+            sint.modoPanico(e, syncIniciar); 
+        }
+        comandos(sync) 
+        try { <SIMB_FIM> } catch (ParseException e) { sint.modoPanico(e, sync); }
+    )
+}
+
+void cmd_aux(Set<Integer> followPai) : { 
+    Set<Integer> followCmdAux = SintAux.FOLLOW.get("cmd_aux");
+    Set<Integer> sync = SintAux.unir(followCmdAux, followPai); 
+}
+{
+    ( try { <SIMB_ATRIBUICAO> } catch (ParseException e) { sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("expressao"), sync)); } expressao(sync) )
+    | lista_arg(sync)
+}
+
+void pfalsa(Set<Integer> followPai) : { 
+    Set<Integer> followPfalsa = SintAux.FOLLOW.get("pfalsa");
+    Set<Integer> sync = SintAux.unir(followPfalsa, followPai); 
+}
+{
+    ( try { <SIMB_SENAO> } catch (ParseException e) { sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("cmd"), sync)); } cmd(sync) )?
+}
+
+void condicao(Set<Integer> followPai) : { 
+    Set<Integer> followCondicao = SintAux.FOLLOW.get("condicao");
+    Set<Integer> sync = SintAux.unir(followCondicao, followPai); 
+}
+{
+    expressao(sync) relacao(sync) expressao(sync)
+}
+
+void relacao(Set<Integer> followPai) : { 
+    Set<Integer> followRelacao = SintAux.FOLLOW.get("relacao");
+    Set<Integer> sync = SintAux.unir(followRelacao, followPai); 
+}
 {
     try {
-        expressao() relacao() expressao()
+        <SIMB_IGUAL> | <SIMB_DIFERENTE> | <SIMB_MAIOR_IGUAL> | <SIMB_MENOR_IGUAL> | <SIMB_MAIOR> | <SIMB_MENOR>
     } catch (ParseException e) {
-        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_FECHA_PARENTESES, SIMB_ENTAO, SIMB_FACA });
+        sint.modoPanico(e, sync); // next is expressao
     }
 }
 
-void relacao() : {}
+void expressao(Set<Integer> followPai) : { 
+    Set<Integer> followExpressao = SintAux.FOLLOW.get("expressao");
+    Set<Integer> sync = SintAux.unir(followExpressao, followPai); 
+}
 {
-    <SIMB_IGUAL> | <SIMB_DIFERENTE> | <SIMB_MAIOR_IGUAL> | <SIMB_MENOR_IGUAL> | <SIMB_MAIOR> | <SIMB_MENOR>
+    termo(sync) ( op_ad(sync) termo(sync) )*
 }
 
-void expressao() : {}
+void op_ad(Set<Integer> followPai) : { 
+    Set<Integer> followOpAd = SintAux.FOLLOW.get("op_ad");
+    Set<Integer> sync = SintAux.unir(followOpAd, followPai); 
+}
 {
     try {
-        termo() ( op_ad() termo() )*
+        <SIMB_MAIS> | <SIMB_MENOS>
     } catch (ParseException e) {
-        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_FECHA_PARENTESES, SIMB_IGUAL, SIMB_DIFERENTE, SIMB_MAIOR_IGUAL, SIMB_MENOR_IGUAL, SIMB_MAIOR, SIMB_MENOR, SIMB_ENTAO, SIMB_FACA, SIMB_ATE, SIMB_PONTO_VIRGULA });
+        sint.modoPanico(e, sync); // next is termo
     }
 }
 
-void op_ad() : {}
+void termo(Set<Integer> followPai) : { 
+    Set<Integer> followTermo = SintAux.FOLLOW.get("termo");
+    Set<Integer> sync = SintAux.unir(followTermo, followPai); 
+}
 {
-    <SIMB_MAIS> | <SIMB_MENOS>
+    op_un(sync) fator(sync) ( op_mul(sync) fator(sync) )*
 }
 
-void termo() : {}
+void op_un(Set<Integer> followPai) : { 
+    Set<Integer> followOpUn = SintAux.FOLLOW.get("op_un");
+    Set<Integer> sync = SintAux.unir(followOpUn, followPai); 
+}
+{
+    ( try { <SIMB_MAIS> | <SIMB_MENOS> } catch (ParseException e) { sint.modoPanico(e, sync); } )?
+}
+
+void op_mul(Set<Integer> followPai) : { 
+    Set<Integer> followOpMul = SintAux.FOLLOW.get("op_mul");
+    Set<Integer> sync = SintAux.unir(followOpMul, followPai); 
+}
 {
     try {
-        op_un() fator() ( op_mul() fator() )*
+        <SIMB_ASTERISCO> | <SIMB_BARRA>
     } catch (ParseException e) {
-        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_MAIS, SIMB_MENOS, SIMB_FECHA_PARENTESES, SIMB_IGUAL, SIMB_DIFERENTE, SIMB_MAIOR_IGUAL, SIMB_MENOR_IGUAL, SIMB_MAIOR, SIMB_MENOR, SIMB_ENTAO, SIMB_FACA, SIMB_ATE, SIMB_PONTO_VIRGULA });
+        sint.modoPanico(e, sync);
     }
 }
 
-void op_un() : {}
-{
-    ( <SIMB_MAIS> | <SIMB_MENOS> )?
+void fator(Set<Integer> followPai) : { 
+    Set<Integer> followFator = SintAux.FOLLOW.get("fator");
+    Set<Integer> sync = SintAux.unir(followFator, followPai); 
 }
-
-void op_mul() : {}
-{
-    <SIMB_ASTERISCO> | <SIMB_BARRA>
-}
-
-void fator() : {}
 {
     try {
-        <ID> | numero() | <SIMB_ABRE_PARENTESES> expressao() <SIMB_FECHA_PARENTESES>
+        <ID>
     } catch (ParseException e) {
-        if (sint != null) sint.modoPanico(e, new int[]{ SIMB_PONTO_VIRGULA, SIMB_FECHA_PARENTESES, SIMB_MAIS, SIMB_MENOS, SIMB_ASTERISCO, SIMB_BARRA });
-    }
+        sint.modoPanico(e, sync);
+    } 
+    | numero(sync) 
+    | try { <SIMB_ABRE_PARENTESES> } catch (ParseException e) { sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("expressao"), sync)); } 
+      expressao(sync) 
+      try { <SIMB_FECHA_PARENTESES> } catch (ParseException e) { sint.modoPanico(e, sync); }
 }
 
-void numero() : {}
+void numero(Set<Integer> followPai) : { 
+    Set<Integer> followNumero = SintAux.FOLLOW.get("numero");
+    Set<Integer> sync = SintAux.unir(followNumero, followPai); 
+}
 {
-    <NUMERO_INTEIRO> | <NUMERO_REAL>
+    try {
+        <NUMERO_INTEIRO> | <NUMERO_REAL>
+    } catch (ParseException e) {
+        sint.modoPanico(e, sync);
+    }
 }
