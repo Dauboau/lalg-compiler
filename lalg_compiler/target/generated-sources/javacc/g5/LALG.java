@@ -187,36 +187,26 @@ public class LALG implements LALGConstants {
   final public void mais_var(Set<Integer> followPai) throws ParseException {
     Set<Integer> followMaisVar = SintAux.FOLLOW.get("mais_var");
     Set<Integer> sync = SintAux.unir(followMaisVar, followPai);
-    label_3:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case SIMB_VIRGULA:
-        ;
-        break;
-      default:
-        jj_la1[3] = jj_gen;
-        break label_3;
-      }
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case SIMB_VIRGULA:
       try {
         jj_consume_token(SIMB_VIRGULA);
       } catch (ParseException e) {
-            // Próximo símbolo é o ID (que é também FIRST de variaveis)
-            sint.modoPanico(e, SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.ID)), sync));
+            // Próximo símbolo vem de variaveis (FIRST)
+            sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("variaveis"), sync));
       }
-      try {
-        jj_consume_token(ID);
-      } catch (ParseException e) {
-            // Próximo símbolo é o início do próprio loop (FIRST = vírgula) ou fim da recursão
-            Set<Integer> syncVirgula = SintAux.unir(SintAux.FIRST.get("mais_var"), sync);
-            sint.modoPanico(e, syncVirgula);
-      }
+      variaveis(sync);
+      break;
+    default:
+      jj_la1[3] = jj_gen;
+      ;
     }
   }
 
   final public void dc_p(Set<Integer> followPai) throws ParseException {
     Set<Integer> followDcP = SintAux.FOLLOW.get("dc_p");
     Set<Integer> sync = SintAux.unir(followDcP, followPai);
-    label_4:
+    label_3:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SIMB_PROCEDIMENTO:
@@ -224,7 +214,7 @@ public class LALG implements LALGConstants {
         break;
       default:
         jj_la1[4] = jj_gen;
-        break label_4;
+        break label_3;
       }
       try {
         jj_consume_token(SIMB_PROCEDIMENTO);
@@ -293,30 +283,19 @@ public class LALG implements LALGConstants {
   final public void mais_par(Set<Integer> followPai) throws ParseException {
     Set<Integer> followMaisPar = SintAux.FOLLOW.get("mais_par");
     Set<Integer> sync = SintAux.unir(followMaisPar, followPai);
-    label_5:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case SIMB_PONTO_VIRGULA:
-        ;
-        break;
-      default:
-        jj_la1[6] = jj_gen;
-        break label_5;
-      }
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case SIMB_PONTO_VIRGULA:
       try {
         jj_consume_token(SIMB_PONTO_VIRGULA);
       } catch (ParseException e) {
-            // Próximo símbolo vem de variaveis (FIRST)
-            sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("variaveis"), sync));
+            // Próximo símbolo vem de lista_par (FIRST)
+            sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("lista_par"), sync));
       }
-      variaveis(sync);
-      try {
-        jj_consume_token(SIMB_DOIS_PONTOS);
-      } catch (ParseException e) {
-            // Próximo símbolo vem de tipo_var (FIRST)
-            sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("tipo_var"), sync));
-      }
-      tipo_var(sync);
+      lista_par(sync);
+      break;
+    default:
+      jj_la1[6] = jj_gen;
+      ;
     }
   }
 
@@ -349,7 +328,9 @@ public class LALG implements LALGConstants {
   }
 
   final public void dc_loc(Set<Integer> followPai) throws ParseException {
-    dc_v(SintAux.unir(SintAux.FOLLOW.get("dc_loc"), followPai));
+    Set<Integer> followDcLoc = SintAux.FOLLOW.get("dc_loc");
+    Set<Integer> sync = SintAux.unir(followDcLoc, followPai);
+    dc_v(sync);
   }
 
   final public void lista_arg(Set<Integer> followPai) throws ParseException {
@@ -393,7 +374,7 @@ public class LALG implements LALGConstants {
   final public void mais_ident(Set<Integer> followPai) throws ParseException {
     Set<Integer> followMaisIdent = SintAux.FOLLOW.get("mais_ident");
     Set<Integer> sync = SintAux.unir(followMaisIdent, followPai);
-    label_6:
+    label_4:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SIMB_PONTO_VIRGULA:
@@ -401,7 +382,7 @@ public class LALG implements LALGConstants {
         break;
       default:
         jj_la1[8] = jj_gen;
-        break label_6;
+        break label_4;
       }
       try {
         jj_consume_token(SIMB_PONTO_VIRGULA);
@@ -422,7 +403,7 @@ public class LALG implements LALGConstants {
   final public void comandos(Set<Integer> followPai) throws ParseException {
     Set<Integer> followComandos = SintAux.FOLLOW.get("comandos");
     Set<Integer> sync = SintAux.unir(followComandos, followPai);
-    label_7:
+    label_5:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SIMB_INICIAR:
@@ -436,7 +417,7 @@ public class LALG implements LALGConstants {
         break;
       default:
         jj_la1[9] = jj_gen;
-        break label_7;
+        break label_5;
       }
       cmd(sync);
       try {
@@ -703,7 +684,7 @@ public class LALG implements LALGConstants {
   final public void outros_termos(Set<Integer> followPai) throws ParseException {
     Set<Integer> followOutrosTermos = SintAux.FOLLOW.get("outros_termos");
     Set<Integer> sync = SintAux.unir(followOutrosTermos, followPai);
-    label_8:
+    label_6:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SIMB_MAIS:
@@ -712,7 +693,7 @@ public class LALG implements LALGConstants {
         break;
       default:
         jj_la1[15] = jj_gen;
-        break label_8;
+        break label_6;
       }
       op_ad(sync);
       termo(sync);
@@ -752,7 +733,7 @@ public class LALG implements LALGConstants {
   final public void mais_fatores(Set<Integer> followPai) throws ParseException {
     Set<Integer> followMaisFatores = SintAux.FOLLOW.get("mais_fatores");
     Set<Integer> sync = SintAux.unir(followMaisFatores, followPai);
-    label_9:
+    label_7:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SIMB_ASTERISCO:
@@ -761,7 +742,7 @@ public class LALG implements LALGConstants {
         break;
       default:
         jj_la1[17] = jj_gen;
-        break label_9;
+        break label_7;
       }
       op_mul(sync);
       fator(sync);
@@ -887,41 +868,41 @@ public class LALG implements LALGConstants {
     finally { jj_save(0, xla); }
   }
 
-  private boolean jj_3R_14() {
+  private boolean jj_3R_12() {
     if (jj_scan_token(SIMB_ABRE_PARENTESES)) return true;
     return false;
   }
 
-  private boolean jj_3R_12() {
-    if (jj_3R_13()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_13() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_14()) jj_scanpos = xsp;
+  private boolean jj_3R_10() {
+    if (jj_3R_11()) return true;
     return false;
   }
 
   private boolean jj_3R_11() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_12()) jj_scanpos = xsp;
+    return false;
+  }
+
+  private boolean jj_3R_9() {
     if (jj_scan_token(SIMB_ATRIBUICAO)) return true;
     return false;
   }
 
-  private boolean jj_3R_10() {
+  private boolean jj_3R_8() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_11()) {
+    if (jj_3R_9()) {
     jj_scanpos = xsp;
-    if (jj_3R_12()) return true;
+    if (jj_3R_10()) return true;
     }
     return false;
   }
 
   private boolean jj_3_1() {
     if (jj_scan_token(ID)) return true;
-    if (jj_3R_10()) return true;
+    if (jj_3R_8()) return true;
     return false;
   }
 
