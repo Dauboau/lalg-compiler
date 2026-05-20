@@ -556,8 +556,7 @@ void cmd(Set<Integer> followPai) : {
         }
         cmd(sync)
         
-      | LOOKAHEAD(2) 
-        try { <ID> } catch (ParseException e) { 
+      | try { <ID> } catch (ParseException e) { 
             // Próximo símbolo vem de cmd_aux (FIRST)
             sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("cmd_aux"), sync)); 
         }

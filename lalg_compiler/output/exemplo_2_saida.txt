@@ -1,24 +1,23 @@
-program - simb_program
-lalg - id
-; - simb_ponto_virgula
-var - simb_var
-a - id
-, - simb_virgula
-minha - id
-_ - erro_simbolo_nao_pertencente
-variavel - id
-: - simb_dois_pontos
-integer - simb_tipo_inteiro
-; - simb_ponto_virgula
-begin - simb_iniciar
-readd - id
-( - simb_abre_parenteses
-a - id
-, - simb_virgula
-@ - erro_simbolo_nao_pertencente
-, - simb_virgula
-1.a23 - erro_numero_real_mal_formado
-) - simb_fecha_parenteses
-; - simb_ponto_virgula
-end - simb_fim
-. - simb_ponto
+Início da análise (Léxica e Sintática) do arquivo: input/exemplo_2.lalg
+
+Erro léxico detectado: Encountered " <ERRO_SIMBOLO_NAO_PERTENCENTE> "_ "" at line 3, column 13.
+Was expecting one of:
+    ":" ...
+    "," ...
+    
+Erro sintático detectado: Encountered " ";" "; "" at line 3, column 31.
+Was expecting one of:
+    "real" ...
+    "integer" ...
+    
+Erro sintático detectado: Encountered " "," ", "" at line 5, column 8.
+Was expecting one of:
+    ";" ...
+    ")" ...
+    
+Erro sintático detectado: Encountered " "end" "end "" at line 6, column 1.
+Was expecting:
+    ";" ...
+    
+Análise concluída, porém com 1 erro(s) léxico(s) e 3 erro(s) sintático(s).
+Análise falhou. O arquivo possui erros léxicos e/ou sintáticos (verifique o console). Saída salva em: output/exemplo_2_saida.txt
