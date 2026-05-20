@@ -57,12 +57,9 @@ public class Sint extends Lex {
         }
         System.err.println(msgErro);
         this.writer.println(msgErro);
-        
-        boolean sync = false;
-        
+                
         while (t.kind != LALGConstants.EOF) {
             if (syncTokens.contains(t.kind)) {
-                sync = true;
                 break;
             }
             t = analisadorJavaCC.getNextToken();

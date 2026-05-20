@@ -177,8 +177,8 @@ public class LALG implements LALGConstants {
     try {
       jj_consume_token(ID);
     } catch (ParseException e) {
-        // Próximo símbolo pode ser a vírgula (loop) ou fim da regra (sync)
-        Set<Integer> syncVirgula = SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_VIRGULA)), sync);
+        // Próximo símbolo da gramática seria mais_var (que tem FIRST = vírgula)
+        Set<Integer> syncVirgula = SintAux.unir(SintAux.FIRST.get("mais_var"), sync);
         sint.modoPanico(e, syncVirgula);
     }
     label_3:
@@ -194,14 +194,14 @@ public class LALG implements LALGConstants {
       try {
         jj_consume_token(SIMB_VIRGULA);
       } catch (ParseException e) {
-            // Próximo símbolo é o ID
-            sint.modoPanico(e, SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.ID)), sync));
+            // Próximo símbolo é o ID. Para ser fiel à gramática, recorremos à repetição de variaveis
+            sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("variaveis"), sync));
       }
       try {
         jj_consume_token(ID);
       } catch (ParseException e) {
-            // Próximo símbolo pode ser a vírgula (loop) ou fim do loop (sync)
-            Set<Integer> syncVirgula = SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_VIRGULA)), sync);
+            // Próximo símbolo é mais_var (FIRST = vírgula)
+            Set<Integer> syncVirgula = SintAux.unir(SintAux.FIRST.get("mais_var"), sync);
             sint.modoPanico(e, syncVirgula);
       }
     }
@@ -371,8 +371,8 @@ public class LALG implements LALGConstants {
     try {
       jj_consume_token(ID);
     } catch (ParseException e) {
-        // Próximo símbolo pode ser PONTO_VIRGULA do loop ou sync
-        Set<Integer> syncVirgula = SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_PONTO_VIRGULA)), sync);
+        // Próximo símbolo vem de mais_ident (FIRST = PONTO_VIRGULA)
+        Set<Integer> syncVirgula = SintAux.unir(SintAux.FIRST.get("mais_ident"), sync);
         sint.modoPanico(e, syncVirgula);
     }
     label_6:
@@ -388,14 +388,14 @@ public class LALG implements LALGConstants {
       try {
         jj_consume_token(SIMB_PONTO_VIRGULA);
       } catch (ParseException e) {
-            // Próximo símbolo é o ID
-            sint.modoPanico(e, SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.ID)), sync));
+            // Próximo símbolo para manter a fidelidade à gramática é argumentos (FIRST = ID)
+            sint.modoPanico(e, SintAux.unir(SintAux.FIRST.get("argumentos"), sync));
       }
       try {
         jj_consume_token(ID);
       } catch (ParseException e) {
-            // Próximo símbolo pode ser PONTO_VIRGULA do loop ou sync
-            Set<Integer> syncVirgula = SintAux.unir(new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_PONTO_VIRGULA)), sync);
+            // Próximo símbolo vem de mais_ident (FIRST = PONTO_VIRGULA)
+            Set<Integer> syncVirgula = SintAux.unir(SintAux.FIRST.get("mais_ident"), sync);
             sint.modoPanico(e, syncVirgula);
       }
     }
