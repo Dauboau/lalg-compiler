@@ -1,6 +1,6 @@
 Início da análise (Léxica e Sintática) do arquivo: input/exemplo_1.lalg
 
-Erro léxico detectado em 'variaveis': Encountered " <ERRO_SIMBOLO_NAO_PERTENCENTE> "@ "" at line 5, column 8.
+Erro léxico detectado em 'variaveis': Encountered " <ERRO_SIMBOLO_NAO_PERTENCENTE> "@ "" at line 7, column 8.
 Was expecting:
     <ID> ...
     

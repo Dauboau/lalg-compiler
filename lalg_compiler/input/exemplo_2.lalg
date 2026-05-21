@@ -2,5 +2,8 @@ program lalg;
 {outro teste}
 var a, minhavariavel: integer;
 begin
+
+{ Erro 1: Erro sintático no parâmetro de read (1.23) }
 read(a, 1.23);
+
 end.

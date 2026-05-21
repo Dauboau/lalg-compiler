@@ -2,5 +2,8 @@ program lalg;
 {teste}
 var a: integer;
 begin
+
+{ Erro 1: Erro léxico no parâmetro de read (@) }
 read(a,@);
+
 end.

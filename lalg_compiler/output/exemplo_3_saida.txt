@@ -1,10 +1,10 @@
 Início da análise (Léxica e Sintática) do arquivo: input/exemplo_3.lalg
 
-Erro sintático detectado em 'variaveis': Encountered " <NUMERO_REAL> "1.23 "" at line 5, column 9.
+Erro sintático detectado em 'variaveis': Encountered " <NUMERO_REAL> "1.23 "" at line 8, column 9.
 Was expecting:
     <ID> ...
     
-Erro léxico detectado em 'variaveis': Encountered " <ERRO_SIMBOLO_NAO_PERTENCENTE> "@ "" at line 5, column 15.
+Erro léxico detectado em 'variaveis': Encountered " <ERRO_SIMBOLO_NAO_PERTENCENTE> "@ "" at line 8, column 15.
 Was expecting:
     <ID> ...
     
