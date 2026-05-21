@@ -14,7 +14,7 @@ begin
     else 
         write(b);
     
-    { Erro 3: Comando incompleto proposital }
+    { Erros 3 e 4: Comando incompleto proposital }
     read(a
     
 end.

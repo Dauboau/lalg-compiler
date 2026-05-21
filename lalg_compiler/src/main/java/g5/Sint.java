@@ -96,7 +96,9 @@ public class Sint extends Lex {
 
             return true;
         } catch (ParseException e) {
-            System.err.println("Erro Crítico Sintático (forado modo pânico): " + e.getMessage());
+            String msgErro = "Erro Crítico Sintático: " + e.getMessage();
+            System.err.println(msgErro);
+            this.writer.println(msgErro);
             return false;
         }
     }

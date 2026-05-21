@@ -1,0 +1,17 @@
+program testeStress;
+
+{ Erro 1: Declaração de constante mal formada (falta sinal de igual) }
+const PI 3.14; 
+
+var a, x, b : integer;
+
+begin
+    { Erro 2: IF mal formado (faltando o THEN) }
+    if a > b write(a);
+    
+    b := 10 * 5;
+    
+    { Erro 3: READ mal formado (falta ponto e vírgula ao final) }
+    read(a, b)
+    
+end.
