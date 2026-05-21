@@ -40,26 +40,28 @@ public class Sint extends Lex {
 
     /**
      * Implementação do modo pânico para recuperação de erros sintáticos.
+     * @param procedimento O nome do procedimento onde o erro foi detectado, para fins de relatório.
      * @param e A exceção ParseException que foi lançada ao detectar um erro sintático.
      * @param syncTokensFilho Conjunto de tokens internos à regra que permitem continuar no mesmo procedimento.
      * @param syncTokensPai Conjunto de tokens seguidores do pai que obrigam a sair do procedimento.
      * @return true se deve sair do procedimento (encontrou token do pai ou EOF), false se continua.
      */
-    public boolean modoPanico(ParseException e, Set<Integer> syncTokensFilho, Set<Integer> syncTokensPai) {
+    public boolean modoPanico(String procedimento, ParseException e, Set<Integer> syncTokensFilho, Set<Integer> syncTokensPai) {
 
         Token t = analisadorJavaCC.getToken(1);
-        
+
         String msgErro;
         if(isTokenError(t.kind)) {
             this.errosLex++;
-            msgErro = "Erro léxico detectado: " + e.getMessage();
+            msgErro = "Erro léxico detectado em '" + procedimento + "': " + e.getMessage();
         }else{
             errosSint++;
-            msgErro = "Erro sintático detectado: " + e.getMessage();
+            msgErro = "Erro sintático detectado em '" + procedimento + "': " + e.getMessage();
         }
         System.err.println(msgErro);
         this.writer.println(msgErro);
                 
+        System.out.println("Procedimento: " + procedimento);
         System.out.println("Tokens de sincronização Filhos: " + syncTokensFilho.stream().map(p->getTokenName(p)).collect(java.util.stream.Collectors.toList()));
         System.out.println("Tokens de sincronização Pais: " + syncTokensPai.stream().map(p->getTokenName(p)).collect(java.util.stream.Collectors.toList()));
         while (t.kind != LALGConstants.EOF) {

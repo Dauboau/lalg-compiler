@@ -1,19 +1,19 @@
 Início da análise (Léxica e Sintática) do arquivo: input/exemplo_5.lalg
 
-Erro léxico detectado: Encountered " <ERRO_IDENTIFICADOR_MAL_FORMADO> "123ErroLexico "" at line 5, column 8.
+Erro léxico detectado em 'variaveis': Encountered " <ERRO_IDENTIFICADOR_MAL_FORMADO> "123ErroLexico "" at line 5, column 8.
 Was expecting:
     <ID> ...
     
-Erro sintático detectado: Encountered " <NUMERO_REAL> "1.23 "" at line 10, column 13.
+Erro sintático detectado em 'variaveis': Encountered " <NUMERO_REAL> "1.23 "" at line 10, column 13.
 Was expecting:
     <ID> ...
     
-Erro sintático detectado: Encountered " "end" "end "" at line 20, column 1.
+Erro sintático detectado em 'cmd': Encountered " "end" "end "" at line 20, column 1.
 Was expecting one of:
     "," ...
     ")" ...
     
-Erro sintático detectado: Encountered " "end" "end "" at line 20, column 1.
+Erro sintático detectado em 'comandos': Encountered " "end" "end "" at line 20, column 1.
 Was expecting one of:
     ";" ...
     "," ...

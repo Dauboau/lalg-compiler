@@ -1,6 +1,6 @@
 Início da análise (Léxica e Sintática) do arquivo: input/exemplo_2.lalg
 
-Erro sintático detectado: Encountered " <NUMERO_REAL> "1.23 "" at line 5, column 9.
+Erro sintático detectado em 'variaveis': Encountered " <NUMERO_REAL> "1.23 "" at line 5, column 9.
 Was expecting:
     <ID> ...
     

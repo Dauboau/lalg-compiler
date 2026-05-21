@@ -103,21 +103,21 @@ void programa(): {
         <SIMB_PROGRAM> 
     } catch (ParseException e) {
         // Próximo símbolo é o ID
-        if (sint.modoPanico(e, new HashSet<Integer>(Arrays.asList(LALGConstants.ID)), followPrograma)) return;
+        if (sint.modoPanico("programa",e, new HashSet<Integer>(Arrays.asList(LALGConstants.ID)), followPrograma)) return;
     }
     
     try {
         <ID> 
     } catch (ParseException e) {
         // Próximo símbolo é o ;
-        if (sint.modoPanico(e, new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_PONTO_VIRGULA)), followPrograma)) return;
+        if (sint.modoPanico("programa",e, new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_PONTO_VIRGULA)), followPrograma)) return;
     }
     
     try {
         <SIMB_PONTO_VIRGULA>
     } catch (ParseException e) {
         // Próximo símbolo é o corpo() -> FIRST do corpo()
-        if (sint.modoPanico(e, SintAux.FIRST.get("corpo"), followPrograma)) return;
+        if (sint.modoPanico("programa",e, SintAux.FIRST.get("corpo"), followPrograma)) return;
     }
     
     corpo(followPrograma)
@@ -126,7 +126,7 @@ void programa(): {
         <SIMB_PONTO>
     } catch (ParseException e) {
         // Próximo é o EOF
-        if (sint.modoPanico(e, new java.util.HashSet<Integer>(), followPrograma)) return;
+        if (sint.modoPanico("programa",e, new java.util.HashSet<Integer>(), followPrograma)) return;
     }
     <EOF>
 }
@@ -144,7 +144,7 @@ void corpo(Set<Integer> followPai) : {
         // Próximo símbolo pode vir de comandos (FIRST), mas como pode ser λ (vazio), incluímos também o SIMB_FIM
         Set<Integer> filhos = new HashSet<Integer>(SintAux.FIRST.get("comandos"));
             filhos.add(LALGConstants.SIMB_FIM);
-            if (sint.modoPanico(e, filhos, sync)) return;
+            if (sint.modoPanico("corpo", e, filhos, sync)) return;
     }
     
     comandos(sync) 
@@ -153,7 +153,7 @@ void corpo(Set<Integer> followPai) : {
         <SIMB_FIM>
     } catch (ParseException e) {
         // Como é o último elemento, a sincronização recorre apenas ao sync (FOLLOW da regra + followPai)
-        if (sint.modoPanico(e, new java.util.HashSet<Integer>(), sync)) return;
+        if (sint.modoPanico("corpo", e, new java.util.HashSet<Integer>(), sync)) return;
     }
 }
 
@@ -175,26 +175,26 @@ void dc_c(Set<Integer> followPai) : {
             <SIMB_CONST> 
         } catch (ParseException e) {
             // Próximo símbolo é o ID
-            if (sint.modoPanico(e, new HashSet<Integer>(Arrays.asList(LALGConstants.ID)), sync)) return;
+            if (sint.modoPanico("dc_c", e, new HashSet<Integer>(Arrays.asList(LALGConstants.ID)), sync)) return;
         }
         try {
             <ID> 
         } catch (ParseException e) {
             // Próximo símbolo é o =
-            if (sint.modoPanico(e, new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_IGUAL)), sync)) return;
+            if (sint.modoPanico("dc_c", e, new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_IGUAL)), sync)) return;
         }
         try {
             <SIMB_IGUAL> 
         } catch (ParseException e) {
             // Próximo símbolo vem da regra numero -> FIRST de numero()
-            if (sint.modoPanico(e, SintAux.FIRST.get("numero"), sync)) return;
+            if (sint.modoPanico("dc_c", e, SintAux.FIRST.get("numero"), sync)) return;
         }
         numero(sync) 
         try {
             <SIMB_PONTO_VIRGULA>
         } catch (ParseException e) {
             // Próximo símbolo do loop pode ser CONST (FIRST de dc_c, que inclui λ) ou fim do loop (recorre ao sync)
-            if (sint.modoPanico(e, SintAux.FIRST.get("dc_c"), sync)) return;
+            if (sint.modoPanico("dc_c", e, SintAux.FIRST.get("dc_c"), sync)) return;
         }
     )*
 }
@@ -209,21 +209,21 @@ void dc_v(Set<Integer> followPai) : {
             <SIMB_VAR> 
         } catch (ParseException e) {
             // Próximo símbolo vem da regra variaveis -> FIRST de variaveis()
-            if (sint.modoPanico(e, SintAux.FIRST.get("variaveis"), sync)) return;
+            if (sint.modoPanico("dc_v", e, SintAux.FIRST.get("variaveis"), sync)) return;
         }
         variaveis(sync) 
         try {
             <SIMB_DOIS_PONTOS> 
         } catch (ParseException e) {
             // Próximo símbolo vem da regra tipo_var -> FIRST de tipo_var()
-            if (sint.modoPanico(e, SintAux.FIRST.get("tipo_var"), sync)) return;
+            if (sint.modoPanico("dc_v", e, SintAux.FIRST.get("tipo_var"), sync)) return;
         }
         tipo_var(sync) 
         try {
             <SIMB_PONTO_VIRGULA>
         } catch (ParseException e) {
             // Próximo símbolo do loop pode ser VAR (FIRST de dc_v, que inclui λ) ou fim do loop (recorre ao sync)
-            if (sint.modoPanico(e, SintAux.FIRST.get("dc_v"), sync)) return;
+            if (sint.modoPanico("dc_v", e, SintAux.FIRST.get("dc_v"), sync)) return;
         }
     )*
 }
@@ -237,7 +237,7 @@ void tipo_var(Set<Integer> followPai) : {
         <SIMB_TIPO_REAL> | <SIMB_TIPO_INTEIRO>
     } catch (ParseException e) {
         // Como é o último elemento, a sincronização recorre apenas ao sync (FOLLOW da regra + followPai)
-        if (sint.modoPanico(e, new java.util.HashSet<Integer>(), sync)) return;
+        if (sint.modoPanico("tipo_var", e, new java.util.HashSet<Integer>(), sync)) return;
     }
 }
 
@@ -250,7 +250,7 @@ void variaveis(Set<Integer> followPai) : {
         <ID> 
     } catch (ParseException e) {
         // Próximo símbolo pode vir de mais_var (FIRST), que inclui λ
-        if (sint.modoPanico(e, SintAux.FIRST.get("mais_var"), sync)) return;
+        if (sint.modoPanico("variaveis", e, SintAux.FIRST.get("mais_var"), sync)) return;
     }
     
     mais_var(sync)
@@ -266,7 +266,7 @@ void mais_var(Set<Integer> followPai) : {
             <SIMB_VIRGULA> 
         } catch (ParseException e) {
             // Próximo símbolo vem de variaveis (FIRST)
-            if (sint.modoPanico(e, SintAux.FIRST.get("variaveis"), sync)) return;
+            if (sint.modoPanico("mais_var", e, SintAux.FIRST.get("variaveis"), sync)) return;
         }
         variaveis(sync)
     )?
@@ -282,7 +282,7 @@ void dc_p(Set<Integer> followPai) : {
             <SIMB_PROCEDIMENTO> 
         } catch (ParseException e) {
             // Próximo símbolo é o ID
-            if (sint.modoPanico(e, new HashSet<Integer>(Arrays.asList(LALGConstants.ID)), sync)) return;
+            if (sint.modoPanico("dc_p", e, new HashSet<Integer>(Arrays.asList(LALGConstants.ID)), sync)) return;
         }
         try {
             <ID> 
@@ -290,14 +290,14 @@ void dc_p(Set<Integer> followPai) : {
             // Próximo símbolo pode vir de parametros (FIRST, que inclui λ) ou PONTO_VIRGULA
             Set<Integer> filhos = new HashSet<Integer>(SintAux.FIRST.get("parametros"));
             filhos.add(LALGConstants.SIMB_PONTO_VIRGULA);
-            if (sint.modoPanico(e, filhos, sync)) return;
+            if (sint.modoPanico("dc_p", e, filhos, sync)) return;
         }
         parametros(sync) 
         try {
             <SIMB_PONTO_VIRGULA> 
         } catch (ParseException e) {
             // Próximo símbolo vem de corpo_p (FIRST)
-            if (sint.modoPanico(e, SintAux.FIRST.get("corpo_p"), sync)) return;
+            if (sint.modoPanico("dc_p", e, SintAux.FIRST.get("corpo_p"), sync)) return;
         }
         corpo_p(sync)
     )*
@@ -313,14 +313,14 @@ void parametros(Set<Integer> followPai) : {
             <SIMB_ABRE_PARENTESES> 
         } catch (ParseException e) {
             // Próximo símbolo vem de lista_par (FIRST)
-            if (sint.modoPanico(e, SintAux.FIRST.get("lista_par"), sync)) return;
+            if (sint.modoPanico("parametros", e, SintAux.FIRST.get("lista_par"), sync)) return;
         }
         lista_par(sync) 
         try {
             <SIMB_FECHA_PARENTESES> 
         } catch (ParseException e) {
             // Como é o último elemento, a sincronização recorre apenas ao sync (FOLLOW da regra + followPai)
-            if (sint.modoPanico(e, new java.util.HashSet<Integer>(), sync)) return;
+            if (sint.modoPanico("parametros", e, new java.util.HashSet<Integer>(), sync)) return;
         }
     )?
 }
@@ -335,7 +335,7 @@ void lista_par(Set<Integer> followPai) : {
         <SIMB_DOIS_PONTOS> 
     } catch (ParseException e) {
         // Próximo símbolo vem de tipo_var (FIRST)
-        if (sint.modoPanico(e, SintAux.FIRST.get("tipo_var"), sync)) return;
+        if (sint.modoPanico("lista_par", e, SintAux.FIRST.get("tipo_var"), sync)) return;
     }
     tipo_var(sync) 
     mais_par(sync)
@@ -351,7 +351,7 @@ void mais_par(Set<Integer> followPai) : {
             <SIMB_PONTO_VIRGULA> 
         } catch (ParseException e) {
             // Próximo símbolo vem de lista_par (FIRST)
-            if (sint.modoPanico(e, SintAux.FIRST.get("lista_par"), sync)) return;
+            if (sint.modoPanico("mais_par", e, SintAux.FIRST.get("lista_par"), sync)) return;
         }
         lista_par(sync) 
     )?
@@ -369,20 +369,20 @@ void corpo_p(Set<Integer> followPai) : {
         // Próximo símbolo pode vir de comandos (FIRST), mas como pode ser λ (vazio), incluímos também o SIMB_FIM
         Set<Integer> filhos = new HashSet<Integer>(SintAux.FIRST.get("comandos"));
             filhos.add(LALGConstants.SIMB_FIM);
-            if (sint.modoPanico(e, filhos, sync)) return;
+            if (sint.modoPanico("corpo_p", e, filhos, sync)) return;
     }
     comandos(sync) 
     try {
         <SIMB_FIM> 
     } catch (ParseException e) {
         // Próximo símbolo é o ;
-        if (sint.modoPanico(e, new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_PONTO_VIRGULA)), sync)) return;
+        if (sint.modoPanico("corpo_p", e, new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_PONTO_VIRGULA)), sync)) return;
     }
     try {
         <SIMB_PONTO_VIRGULA>
     } catch (ParseException e) {
         // Próximo símbolo do loop do chamador pode ser PROCEDIMENTO (FIRST de dc_p, que inclui λ) ou recorre ao sync
-        if (sint.modoPanico(e, SintAux.FIRST.get("dc_p"), sync)) return;
+        if (sint.modoPanico("corpo_p", e, SintAux.FIRST.get("dc_p"), sync)) return;
     }
 }
 
@@ -404,14 +404,14 @@ void lista_arg(Set<Integer> followPai) : {
             <SIMB_ABRE_PARENTESES> 
         } catch (ParseException e) {
             // Próximo símbolo vem de argumentos (FIRST)
-            if (sint.modoPanico(e, SintAux.FIRST.get("argumentos"), sync)) return;
+            if (sint.modoPanico("lista_arg", e, SintAux.FIRST.get("argumentos"), sync)) return;
         }
         argumentos(sync) 
         try {
             <SIMB_FECHA_PARENTESES> 
         } catch (ParseException e) {
             // Como é o último elemento, a sincronização recorre apenas ao sync (FOLLOW da regra + followPai)
-            if (sint.modoPanico(e, new java.util.HashSet<Integer>(), sync)) return;
+            if (sint.modoPanico("lista_arg", e, new java.util.HashSet<Integer>(), sync)) return;
         }
     )?
 }
@@ -425,7 +425,7 @@ void argumentos(Set<Integer> followPai) : {
         <ID> 
     } catch (ParseException e) {
         // Próximo símbolo pode vir de mais_ident (FIRST, que inclui λ)
-        if (sint.modoPanico(e, SintAux.FIRST.get("mais_ident"), sync)) return;
+        if (sint.modoPanico("argumentos", e, SintAux.FIRST.get("mais_ident"), sync)) return;
     }
     mais_ident(sync)
 }
@@ -440,7 +440,7 @@ void mais_ident(Set<Integer> followPai) : {
             <SIMB_PONTO_VIRGULA> 
         } catch (ParseException e) {
             // Próximo símbolo para manter a fidelidade à gramática é argumentos (FIRST = ID)
-            if (sint.modoPanico(e, SintAux.FIRST.get("argumentos"), sync)) return;
+            if (sint.modoPanico("mais_ident", e, SintAux.FIRST.get("argumentos"), sync)) return;
         }
         argumentos(sync)
     )?
@@ -457,7 +457,7 @@ void comandos(Set<Integer> followPai) : {
             <SIMB_PONTO_VIRGULA> 
         } catch (ParseException e) {
             // Próximo símbolo pode ser inicio de novo comando (FIRST de comandos) ou fim do loop (recorre ao sync)
-            if (sint.modoPanico(e, SintAux.FIRST.get("comandos"), sync)) return;
+            if (sint.modoPanico("comandos", e, SintAux.FIRST.get("comandos"), sync)) return;
         }
     )*
 }
@@ -470,89 +470,89 @@ void cmd(Set<Integer> followPai) : {
     (
         try { <SIMB_LEIA> } catch (ParseException e) { 
             // Próximo símbolo é o abre_parenteses
-            if (sint.modoPanico(e, new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_ABRE_PARENTESES)), sync)) return; 
+            if (sint.modoPanico("cmd", e, new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_ABRE_PARENTESES)), sync)) return; 
         }
         try { <SIMB_ABRE_PARENTESES> } catch (ParseException e) { 
             // Próximo símbolo vem de variaveis (FIRST)
-            if (sint.modoPanico(e, SintAux.FIRST.get("variaveis"), sync)) return; 
+            if (sint.modoPanico("cmd", e, SintAux.FIRST.get("variaveis"), sync)) return; 
         }
         variaveis(sync) 
         try { <SIMB_FECHA_PARENTESES> } catch (ParseException e) { 
             // Como é o último elemento, a sincronização recorre apenas ao sync
-            if (sint.modoPanico(e, new java.util.HashSet<Integer>(), sync)) return; 
+            if (sint.modoPanico("cmd", e, new java.util.HashSet<Integer>(), sync)) return; 
         }
         
       | try { <SIMB_ESCREVA> } catch (ParseException e) { 
             // Próximo símbolo é o abre_parenteses
-            if (sint.modoPanico(e, new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_ABRE_PARENTESES)), sync)) return; 
+            if (sint.modoPanico("cmd", e, new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_ABRE_PARENTESES)), sync)) return; 
         }
         try { <SIMB_ABRE_PARENTESES> } catch (ParseException e) { 
             // Próximo símbolo vem de variaveis (FIRST)
-            if (sint.modoPanico(e, SintAux.FIRST.get("variaveis"), sync)) return; 
+            if (sint.modoPanico("cmd", e, SintAux.FIRST.get("variaveis"), sync)) return; 
         }
         variaveis(sync) 
         try { <SIMB_FECHA_PARENTESES> } catch (ParseException e) { 
             // Como é o último elemento, a sincronização recorre apenas ao sync
-            if (sint.modoPanico(e, new java.util.HashSet<Integer>(), sync)) return; 
+            if (sint.modoPanico("cmd", e, new java.util.HashSet<Integer>(), sync)) return; 
         }
         
       | try { <SIMB_ENQUANTO> } catch (ParseException e) { 
             // Próximo símbolo é o abre_parenteses
-            if (sint.modoPanico(e, new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_ABRE_PARENTESES)), sync)) return; 
+            if (sint.modoPanico("cmd", e, new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_ABRE_PARENTESES)), sync)) return; 
         }
         try { <SIMB_ABRE_PARENTESES> } catch (ParseException e) { 
             // Próximo símbolo vem de condicao (FIRST)
-            if (sint.modoPanico(e, SintAux.FIRST.get("condicao"), sync)) return; 
+            if (sint.modoPanico("cmd", e, SintAux.FIRST.get("condicao"), sync)) return; 
         }
         condicao(sync) 
         try { <SIMB_FECHA_PARENTESES> } catch (ParseException e) { 
             // Próximo símbolo é FACA
-            if (sint.modoPanico(e, new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_FACA)), sync)) return; 
+            if (sint.modoPanico("cmd", e, new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_FACA)), sync)) return; 
         }
         try { <SIMB_FACA> } catch (ParseException e) { 
             // Próximo símbolo vem de cmd (FIRST)
-            if (sint.modoPanico(e, SintAux.FIRST.get("cmd"), sync)) return; 
+            if (sint.modoPanico("cmd", e, SintAux.FIRST.get("cmd"), sync)) return; 
         }
         cmd(sync)
         
       | try { <SIMB_SE> } catch (ParseException e) { 
             // Próximo símbolo vem de condicao (FIRST)
-            if (sint.modoPanico(e, SintAux.FIRST.get("condicao"), sync)) return; 
+            if (sint.modoPanico("cmd", e, SintAux.FIRST.get("condicao"), sync)) return; 
         }
         condicao(sync) 
         try { <SIMB_ENTAO> } catch (ParseException e) { 
             // Próximo símbolo vem de cmd (FIRST)
-            if (sint.modoPanico(e, SintAux.FIRST.get("cmd"), sync)) return; 
+            if (sint.modoPanico("cmd", e, SintAux.FIRST.get("cmd"), sync)) return; 
         }
         cmd(sync) pfalsa(sync)
         
       | try { <SIMB_PARA> } catch (ParseException e) { 
             // Próximo símbolo é ID
-            if (sint.modoPanico(e, new HashSet<Integer>(Arrays.asList(LALGConstants.ID)), sync)) return; 
+            if (sint.modoPanico("cmd", e, new HashSet<Integer>(Arrays.asList(LALGConstants.ID)), sync)) return; 
         }
         try { <ID> } catch (ParseException e) { 
             // Próximo símbolo é ATRIBUICAO
-            if (sint.modoPanico(e, new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_ATRIBUICAO)), sync)) return; 
+            if (sint.modoPanico("cmd", e, new HashSet<Integer>(Arrays.asList(LALGConstants.SIMB_ATRIBUICAO)), sync)) return; 
         }
         try { <SIMB_ATRIBUICAO> } catch (ParseException e) { 
             // Próximo símbolo vem de expressao (FIRST)
-            if (sint.modoPanico(e, SintAux.FIRST.get("expressao"), sync)) return; 
+            if (sint.modoPanico("cmd", e, SintAux.FIRST.get("expressao"), sync)) return; 
         }
         expressao(sync) 
         try { <SIMB_ATE> } catch (ParseException e) { 
             // Próximo símbolo vem de expressao (FIRST)
-            if (sint.modoPanico(e, SintAux.FIRST.get("expressao"), sync)) return; 
+            if (sint.modoPanico("cmd", e, SintAux.FIRST.get("expressao"), sync)) return; 
         }
         expressao(sync) 
         try { <SIMB_FACA> } catch (ParseException e) { 
             // Próximo símbolo vem de cmd (FIRST)
-            if (sint.modoPanico(e, SintAux.FIRST.get("cmd"), sync)) return; 
+            if (sint.modoPanico("cmd", e, SintAux.FIRST.get("cmd"), sync)) return; 
         }
         cmd(sync)
         
       | try { <ID> } catch (ParseException e) { 
             // Próximo símbolo pode vir de cmd_aux (FIRST), que inclui λ
-            if (sint.modoPanico(e, SintAux.FIRST.get("cmd_aux"), sync)) return; 
+            if (sint.modoPanico("cmd", e, SintAux.FIRST.get("cmd_aux"), sync)) return; 
         }
         cmd_aux(sync)
         
@@ -560,12 +560,12 @@ void cmd(Set<Integer> followPai) : {
             // Próximo símbolo vem de comandos (FIRST, que inclui λ) ou SIMB_FIM
             Set<Integer> filhos = new HashSet<Integer>(SintAux.FIRST.get("comandos"));
             filhos.add(LALGConstants.SIMB_FIM);
-            if (sint.modoPanico(e, filhos, sync)) return; 
+            if (sint.modoPanico("cmd", e, filhos, sync)) return; 
         }
         comandos(sync) 
         try { <SIMB_FIM> } catch (ParseException e) { 
             // Como é o último elemento, a sincronização recorre apenas ao sync
-            if (sint.modoPanico(e, new java.util.HashSet<Integer>(), sync)) return; 
+            if (sint.modoPanico("cmd", e, new java.util.HashSet<Integer>(), sync)) return; 
         }
     )
 }
@@ -577,7 +577,7 @@ void cmd_aux(Set<Integer> followPai) : {
 {
     ( try { <SIMB_ATRIBUICAO> } catch (ParseException e) { 
         // Próximo símbolo vem de expressao (FIRST)
-        if (sint.modoPanico(e, SintAux.FIRST.get("expressao"), sync)) return; 
+        if (sint.modoPanico("cmd_aux", e, SintAux.FIRST.get("expressao"), sync)) return; 
     } expressao(sync) )
     | lista_arg(sync)
 }
@@ -589,7 +589,7 @@ void pfalsa(Set<Integer> followPai) : {
 {
     ( try { <SIMB_SENAO> } catch (ParseException e) { 
         // Próximo símbolo vem de cmd (FIRST)
-        if (sint.modoPanico(e, SintAux.FIRST.get("cmd"), sync)) return; 
+        if (sint.modoPanico("pfalsa", e, SintAux.FIRST.get("cmd"), sync)) return; 
     } cmd(sync) )?
 }
 
@@ -610,7 +610,7 @@ void relacao(Set<Integer> followPai) : {
         <SIMB_IGUAL> | <SIMB_DIFERENTE> | <SIMB_MAIOR_IGUAL> | <SIMB_MENOR_IGUAL> | <SIMB_MAIOR> | <SIMB_MENOR>
     } catch (ParseException e) {
         // A regra expressao já está no FOLLOW de relacao
-        if (sint.modoPanico(e, new java.util.HashSet<Integer>(), sync)) return; 
+        if (sint.modoPanico("relacao", e, new java.util.HashSet<Integer>(), sync)) return; 
     }
 }
 
@@ -639,7 +639,7 @@ void op_ad(Set<Integer> followPai) : {
         <SIMB_MAIS> | <SIMB_MENOS>
     } catch (ParseException e) {
         // O FOLLOW de op_ad já contém termo
-        if (sint.modoPanico(e, new java.util.HashSet<Integer>(), sync)) return; 
+        if (sint.modoPanico("op_ad", e, new java.util.HashSet<Integer>(), sync)) return; 
     }
 }
 
@@ -666,7 +666,7 @@ void op_un(Set<Integer> followPai) : {
 {
     ( try { <SIMB_MAIS> | <SIMB_MENOS> } catch (ParseException e) { 
         // O FOLLOW de op_un contém fator
-        if (sint.modoPanico(e, new java.util.HashSet<Integer>(), sync)) return; 
+        if (sint.modoPanico("op_un", e, new java.util.HashSet<Integer>(), sync)) return; 
     } )?
 }
 
@@ -679,7 +679,7 @@ void op_mul(Set<Integer> followPai) : {
         <SIMB_ASTERISCO> | <SIMB_BARRA>
     } catch (ParseException e) {
         // O FOLLOW de op_mul contém fator
-        if (sint.modoPanico(e, new java.util.HashSet<Integer>(), sync)) return;
+        if (sint.modoPanico("op_mul", e, new java.util.HashSet<Integer>(), sync)) return;
     }
 }
 
@@ -692,17 +692,17 @@ void fator(Set<Integer> followPai) : {
         <ID>
     } catch (ParseException e) {
         // Usa o sync nativo do follow
-        if (sint.modoPanico(e, new java.util.HashSet<Integer>(), sync)) return;
+        if (sint.modoPanico("fator", e, new java.util.HashSet<Integer>(), sync)) return;
     } 
     | numero(sync) 
     | try { <SIMB_ABRE_PARENTESES> } catch (ParseException e) { 
         // Próximo símbolo vem de expressao (FIRST)
-        if (sint.modoPanico(e, SintAux.FIRST.get("expressao"), sync)) return; 
+        if (sint.modoPanico("fator", e, SintAux.FIRST.get("expressao"), sync)) return; 
       } 
       expressao(sync) 
       try { <SIMB_FECHA_PARENTESES> } catch (ParseException e) { 
         // Como é o último elemento, a sincronização recorre apenas ao sync
-        if (sint.modoPanico(e, new java.util.HashSet<Integer>(), sync)) return; 
+        if (sint.modoPanico("fator", e, new java.util.HashSet<Integer>(), sync)) return; 
       }
 }
 
@@ -715,6 +715,6 @@ void numero(Set<Integer> followPai) : {
         <NUMERO_INTEIRO> | <NUMERO_REAL>
     } catch (ParseException e) {
         // Como é o último elemento, a sincronização recorre apenas ao sync
-        if (sint.modoPanico(e, new java.util.HashSet<Integer>(), sync)) return;
+        if (sint.modoPanico("numero", e, new java.util.HashSet<Integer>(), sync)) return;
     }
 }
