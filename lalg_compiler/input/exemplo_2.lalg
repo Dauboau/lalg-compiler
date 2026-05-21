@@ -1,6 +1,6 @@
 program lalg;
 {outro teste}
-var a, minha_variavel: integer;
+var a, minhavariavel: integer;
 begin
-readd(a,@,1.a23);
+read(a, 1.23);
 end.
