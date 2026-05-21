@@ -41,9 +41,11 @@ public class Sint extends Lex {
     /**
      * Implementação do modo pânico para recuperação de erros sintáticos.
      * @param e A exceção ParseException que foi lançada ao detectar um erro sintático.
-     * @param syncTokens Um conjunto de códigos de tokens que servem como pontos de sincronização para retomar a análise após um erro.
+     * @param syncTokensFilho Conjunto de tokens internos à regra que permitem continuar no mesmo procedimento.
+     * @param syncTokensPai Conjunto de tokens seguidores do pai que obrigam a sair do procedimento.
+     * @return true se deve sair do procedimento (encontrou token do pai ou EOF), false se continua.
      */
-    public void modoPanico(ParseException e, Set<Integer> syncTokens) {
+    public boolean modoPanico(ParseException e, Set<Integer> syncTokensFilho, Set<Integer> syncTokensPai) {
 
         Token t = analisadorJavaCC.getToken(1);
         
@@ -58,12 +60,22 @@ public class Sint extends Lex {
         System.err.println(msgErro);
         this.writer.println(msgErro);
                 
+        System.out.println(syncTokensFilho.stream().map(p->getTokenName(p)).collect(java.util.stream.Collectors.toList()));
+        this.writer.println(syncTokensFilho.stream().map(p->getTokenName(p)).collect(java.util.stream.Collectors.toList()));
+        System.out.println(syncTokensPai.stream().map(p->getTokenName(p)).collect(java.util.stream.Collectors.toList()));
+        this.writer.println(syncTokensPai.stream().map(p->getTokenName(p)).collect(java.util.stream.Collectors.toList()));
         while (t.kind != LALGConstants.EOF) {
-            if (syncTokens.contains(t.kind)) {
-                break;
+            System.out.println(getTokenName(t.kind));
+            this.writer.println(getTokenName(t.kind));
+            if (syncTokensFilho != null && syncTokensFilho.contains(t.kind)) {
+                return false;
+            }
+            if (syncTokensPai != null && syncTokensPai.contains(t.kind)) {
+                return true;
             }
             t = analisadorJavaCC.getNextToken();
         }
+        return true;
     }
 
     /**
