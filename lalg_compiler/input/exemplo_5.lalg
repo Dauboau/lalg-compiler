@@ -1,0 +1,20 @@
+program testepanico;
+{ Este programa testa a robustez do Modo Pânico }
+
+{ Erro 1: Erro léxico no meio das variáveis }
+var a, 123ErroLexico, c: integer; 
+
+begin
+    
+    { Erro 2: Número real onde se esperava ID (causa erro em argumentos) }
+    read(a, 1.23, b);
+    
+    if a > 10 then 
+        write(a)
+    else 
+        write(b);
+    
+    { Erro 3: Comando incompleto proposital }
+    read(a
+    
+end.
