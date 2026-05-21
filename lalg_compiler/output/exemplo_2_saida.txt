@@ -4,17 +4,5 @@ Erro sintático detectado: Encountered " <NUMERO_REAL> "1.23 "" at line 5, colum
 Was expecting:
     <ID> ...
     
-[simb_virgula]
-[simb_senao, eof, simb_ponto_virgula, simb_ponto, simb_fecha_parenteses, simb_dois_pontos, simb_fim]
-numero_real
-numero_real
-simb_fecha_parenteses
-Erro sintático detectado: Encountered " ";" "; "" at line 5, column 14.
-Was expecting:
-    ")" ...
-    
-[]
-[simb_senao, eof, simb_ponto_virgula, simb_ponto, simb_fim]
-simb_ponto_virgula
-Análise concluída, porém com 0 erro(s) léxico(s) e 2 erro(s) sintático(s).
+Análise concluída, porém com 0 erro(s) léxico(s) e 1 erro(s) sintático(s).
 Análise falhou. O arquivo possui erros léxicos e/ou sintáticos (verifique o console). Saída salva em: output/exemplo_2_saida.txt

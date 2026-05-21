@@ -60,21 +60,22 @@ public class Sint extends Lex {
         System.err.println(msgErro);
         this.writer.println(msgErro);
                 
-        System.out.println(syncTokensFilho.stream().map(p->getTokenName(p)).collect(java.util.stream.Collectors.toList()));
-        this.writer.println(syncTokensFilho.stream().map(p->getTokenName(p)).collect(java.util.stream.Collectors.toList()));
-        System.out.println(syncTokensPai.stream().map(p->getTokenName(p)).collect(java.util.stream.Collectors.toList()));
-        this.writer.println(syncTokensPai.stream().map(p->getTokenName(p)).collect(java.util.stream.Collectors.toList()));
+        System.out.println("Tokens de sincronização Filhos: " + syncTokensFilho.stream().map(p->getTokenName(p)).collect(java.util.stream.Collectors.toList()));
+        System.out.println("Tokens de sincronização Pais: " + syncTokensPai.stream().map(p->getTokenName(p)).collect(java.util.stream.Collectors.toList()));
         while (t.kind != LALGConstants.EOF) {
-            System.out.println(getTokenName(t.kind));
-            this.writer.println(getTokenName(t.kind));
+            t = analisadorJavaCC.getToken(1);
+            System.out.println("Próximo token a ser analisado: " + getTokenName(t.kind));
             if (syncTokensFilho != null && syncTokensFilho.contains(t.kind)) {
+                System.out.println("Continuando no mesmo procedimento...");
                 return false;
             }
             if (syncTokensPai != null && syncTokensPai.contains(t.kind)) {
+                System.out.println("Saindo do procedimento...");
                 return true;
             }
-            t = analisadorJavaCC.getNextToken();
+            analisadorJavaCC.getNextToken();
         }
+        System.out.println("Saindo do procedimento por EOF...");
         return true;
     }
 
@@ -84,7 +85,7 @@ public class Sint extends Lex {
     public boolean parse() {
         try {
             analisadorJavaCC.programa();
-            if (this.errosSint > 0) {
+            if (this.errosSint > 0 || this.errosLex > 0) {
                 String msgErro = "Análise concluída, porém com " + this.errosLex + " erro(s) léxico(s) e " + this.errosSint + " erro(s) sintático(s).";
                 System.out.println(msgErro);
                 this.writer.println(msgErro);

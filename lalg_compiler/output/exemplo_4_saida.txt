@@ -1,0 +1,3 @@
+Início da análise (Léxica e Sintática) do arquivo: input/exemplo_4.lalg
+
+Análise Léxica e Sintática concluída sem erros. Saída salva em: output/exemplo_4_saida.txt

@@ -1,0 +1,6 @@
+program lalg;
+{outro teste}
+var a, minhavariavel: integer;
+begin
+read(a, 1.23, @);
+end.

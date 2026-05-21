@@ -1,13 +1,8 @@
 Início da análise (Léxica e Sintática) do arquivo: input/exemplo_1.lalg
 
-Erro sintático detectado: Encountered " "," ", "" at line 5, column 8.
-Was expecting one of:
-    ";" ...
-    ")" ...
-    
-Erro sintático detectado: Encountered " "end" "end "" at line 6, column 1.
+Erro léxico detectado: Encountered " <ERRO_SIMBOLO_NAO_PERTENCENTE> "@ "" at line 5, column 8.
 Was expecting:
-    ";" ...
+    <ID> ...
     
-Análise concluída, porém com 0 erro(s) léxico(s) e 2 erro(s) sintático(s).
+Análise concluída, porém com 1 erro(s) léxico(s) e 0 erro(s) sintático(s).
 Análise falhou. O arquivo possui erros léxicos e/ou sintáticos (verifique o console). Saída salva em: output/exemplo_1_saida.txt

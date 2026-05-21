@@ -105,7 +105,7 @@ public class LALG implements LALGConstants {
       try {
         jj_consume_token(SIMB_PONTO_VIRGULA);
       } catch (ParseException e) {
-            // Próximo símbolo do loop pode ser CONST (FIRST de dc_c) ou fim do loop (recorre ao sync)
+            // Próximo símbolo do loop pode ser CONST (FIRST de dc_c, que inclui λ) ou fim do loop (recorre ao sync)
             if (sint.modoPanico(e, SintAux.FIRST.get("dc_c"), sync)) {if (true) return;}
       }
     }
@@ -141,7 +141,7 @@ public class LALG implements LALGConstants {
       try {
         jj_consume_token(SIMB_PONTO_VIRGULA);
       } catch (ParseException e) {
-            // Próximo símbolo do loop pode ser VAR (FIRST de dc_v) ou fim do loop (recorre ao sync)
+            // Próximo símbolo do loop pode ser VAR (FIRST de dc_v, que inclui λ) ou fim do loop (recorre ao sync)
             if (sint.modoPanico(e, SintAux.FIRST.get("dc_v"), sync)) {if (true) return;}
       }
     }
@@ -175,7 +175,7 @@ public class LALG implements LALGConstants {
     try {
       jj_consume_token(ID);
     } catch (ParseException e) {
-        // Próximo símbolo da gramática seria mais_var (que tem FIRST = vírgula)
+        // Próximo símbolo pode vir de mais_var (FIRST), que inclui λ
         if (sint.modoPanico(e, SintAux.FIRST.get("mais_var"), sync)) {if (true) return;}
     }
     mais_var(sync);
@@ -222,7 +222,7 @@ public class LALG implements LALGConstants {
       try {
         jj_consume_token(ID);
       } catch (ParseException e) {
-            // Próximo símbolo pode vir de parametros (FIRST) ou PONTO_VIRGULA
+            // Próximo símbolo pode vir de parametros (FIRST, que inclui λ) ou PONTO_VIRGULA
             Set<Integer> filhos = new HashSet<Integer>(SintAux.FIRST.get("parametros"));
             filhos.add(LALGConstants.SIMB_PONTO_VIRGULA);
             if (sint.modoPanico(e, filhos, sync)) {if (true) return;}
@@ -318,7 +318,7 @@ public class LALG implements LALGConstants {
     try {
       jj_consume_token(SIMB_PONTO_VIRGULA);
     } catch (ParseException e) {
-        // Próximo símbolo do loop do chamador pode ser PROCEDIMENTO (FIRST de dc_p) ou recorre ao sync
+        // Próximo símbolo do loop do chamador pode ser PROCEDIMENTO (FIRST de dc_p, que inclui λ) ou recorre ao sync
         if (sint.modoPanico(e, SintAux.FIRST.get("dc_p"), sync)) {if (true) return;}
     }
   }
@@ -360,7 +360,7 @@ public class LALG implements LALGConstants {
     try {
       jj_consume_token(ID);
     } catch (ParseException e) {
-        // Próximo símbolo vem de mais_ident (FIRST = PONTO_VIRGULA)
+        // Próximo símbolo pode vir de mais_ident (FIRST, que inclui λ)
         if (sint.modoPanico(e, SintAux.FIRST.get("mais_ident"), sync)) {if (true) return;}
     }
     mais_ident(sync);
@@ -544,7 +544,7 @@ public class LALG implements LALGConstants {
       try {
         jj_consume_token(ID);
       } catch (ParseException e) {
-            // Próximo símbolo vem de cmd_aux (FIRST)
+            // Próximo símbolo pode vir de cmd_aux (FIRST), que inclui λ
             if (sint.modoPanico(e, SintAux.FIRST.get("cmd_aux"), sync)) {if (true) return;}
       }
       cmd_aux(sync);
@@ -553,7 +553,7 @@ public class LALG implements LALGConstants {
       try {
         jj_consume_token(SIMB_INICIAR);
       } catch (ParseException e) {
-            // Próximo símbolo vem de comandos (FIRST) ou SIMB_FIM
+            // Próximo símbolo vem de comandos (FIRST, que inclui λ) ou SIMB_FIM
             Set<Integer> filhos = new HashSet<Integer>(SintAux.FIRST.get("comandos"));
             filhos.add(LALGConstants.SIMB_FIM);
             if (sint.modoPanico(e, filhos, sync)) {if (true) return;}

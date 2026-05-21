@@ -1,0 +1,12 @@
+Início da análise (Léxica e Sintática) do arquivo: input/exemplo_3.lalg
+
+Erro sintático detectado: Encountered " <NUMERO_REAL> "1.23 "" at line 5, column 9.
+Was expecting:
+    <ID> ...
+    
+Erro léxico detectado: Encountered " <ERRO_SIMBOLO_NAO_PERTENCENTE> "@ "" at line 5, column 15.
+Was expecting:
+    <ID> ...
+    
+Análise concluída, porém com 1 erro(s) léxico(s) e 1 erro(s) sintático(s).
+Análise falhou. O arquivo possui erros léxicos e/ou sintáticos (verifique o console). Saída salva em: output/exemplo_3_saida.txt
